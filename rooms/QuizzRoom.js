@@ -1,0 +1,536 @@
+const _ = require('lodash');
+const randomstring = require('randomstring');
+const Room = require('colyseus').Room;
+const Clock = require('colyseus').Clock;
+const StateMachine = require('javascript-state-machine');
+
+const COLORS = [
+  'red',
+  'blue',
+  'green',
+  'yellow',
+];
+
+const QUESTIONS = [
+  {
+    text: 'La chérophobie est la peur du ____.',
+    answer: 'bonheur',
+    source: null,
+    traps: [
+      'sang',
+      'vide',
+      'chaos',
+      'bois',
+    ],
+  },
+  {
+    text: 'Un bébé poulpe est environ de la taille d\'une ____ lorsqu\'il née.',
+    answer: 'puce',
+    source: null,
+    traps: [
+      'orange',
+      'vis',
+    ],
+  },
+  {
+    text: 'Le vrai nom de Bob Dylan est ____ Zimmerman.',
+    answer: 'robert',
+    source: null,
+    traps: [
+      'john',
+      'ted',
+    ],
+  },
+  {
+    text: 'L\'oiseau de Twitter a vraiment un nom: ____.',
+    answer: 'larry',
+    source: null,
+    traps: [
+      'john',
+      'ted',
+    ],
+  },
+];
+
+//Times in seconds
+const LOBBY_TIME = 10;
+const QUESTION_TIME = 30;
+const VOTE_TIME = 200;
+const ANSWER_TIME = 60000;
+const MAX_QUESTIONS = 3;
+const MAX_PLAYERS = 8;
+
+module.exports = class QuizzRoom extends Room {
+  onInit (options) {
+    this.code = null;
+    this.maxClients = MAX_PLAYERS;
+    this.maxQuestions = MAX_QUESTIONS;
+
+    //This is the state sent to connected clients.
+    this.setState({
+      code: this.code,
+      gameTimer: null,
+      gameTimerMax: null,
+      gameStarted: null,
+      gamePaused: false,
+      gamePausedMessage: '',
+      screens: {},
+      players: {},
+      answers: null,
+      results: {},
+      playerVotes: {},
+      state: null,
+      logs: []
+    });
+
+    this.fsm = new StateMachine({
+      init: 'lobby',
+      transitions: [
+        { name: 'start',    from: 'lobby',    to: 'question'  },
+        { name: 'vote',     from: 'question', to: 'vote'      },
+        { name: 'results',  from: 'vote',     to: 'results'   },
+        { name: 'ask',      from: 'results',  to: () => {
+            return this.questionsAsked.length < this.questions.length ? 'question' : 'end';
+          }},
+        { name: 'end',      from: 'answer',   to: 'results'   },
+        { name: 'newGame',  from: 'end',      to: 'lobby'     },
+      ],
+      methods: {
+        onBeforeTransition: this.onBeforeTransition.bind(this),
+        onEnterState: this.onEnterState.bind(this),
+        onEnterQuestion: this.onEnterQuestion.bind(this),
+        onEnterVote: this.onEnterVote.bind(this),
+        onEnterResults: this.onEnterResults.bind(this),
+        onEnterEnd: this.onEnterEnd.bind(this),
+        onEnterLobby: this.onEnterLobby.bind(this),
+      }
+    });
+
+    console.log(`Quizzroom ${this.code} - created.`, options);
+  }
+
+  onEnterLobby() {
+    this.questions = _.sampleSize(QUESTIONS, this.maxQuestions);
+    this.questionsAsked = [];
+
+    this.timer = {
+      start: null,
+    };
+
+    this.state.gameTimer = LOBBY_TIME;
+    this.state.gameTimerMax = LOBBY_TIME;
+    this.state.gameStarted = false;
+    this.state.state = 'lobby';
+  }
+
+  requestJoin (options, isNew) {
+    console.log('requestJoin');
+    if (options.code) {
+      console.log('code = ', this.code, '==', options.code);
+      if (this.code === null) {
+        throw new Error('join_request_fail_room_unknown');
+      }
+
+      // If a client tries to join a started game and is not part of the game, disconnect him
+      if (this.state.gameStarted
+          && !this.state.players[options.clientId]
+          && !this.state.screens[options.clientId]
+        ) {
+        throw new Error('join_request_fail_game_in_progress');
+        return false;
+      }
+
+      return options.code.toUpperCase() == this.code;
+    }
+
+    if(!options.code) {
+      console.log('no code - isNew = ', isNew);
+      return isNew;
+    }
+
+    console.log('return false');
+    return false;
+  }
+
+  onJoin (client, options) {
+    if (!this.code) {
+      this.code = randomstring.generate({length: 6, readable: true, capitalization: 'uppercase'});
+      this.state.code = this.code;
+    }
+    if (options.screen) {
+      console.log(`Quizzroom ${this.code} - screen ${client.id} joined.`);
+      this.state.logs.push(`Screen ${client.id} joined.`);
+      this.state.screens[client.id] = {
+        id: client.id,
+      };
+    } else {
+      let username = options.name;
+      if (!options.name) {
+        username = `Player ${_.keys(this.state.players).length + 1}`;
+      }
+
+      console.log(`Quizzroom ${this.code} - player ${client.id} ${username} joined.`);
+      this.state.logs.push(`Player ${client.id} ${username} joined.`);
+      if (this.state.players[client.id]) {
+        this.state.players[client.id].disconnected = false;
+        //If all players are connected, resume the game
+        if (!this.disconnectedPlayers().length) {
+          this.lock();
+          this.resumeGame();
+        }
+      } else {
+        this.state.players[client.id] = {
+          id: client.id,
+          name: username,
+          color: 'red',
+          score: 0,
+          ready: null,
+          disconnected: null,
+        };
+      }
+
+    }
+  }
+
+  onLeave (client) {
+    if (this.state.players[client.id]) {
+      console.log(`Quizzroom ${this.code} - client ${client.id} left.`);
+      this.state.players[client.id].disconnected = true;
+      this.pauseGame('A player has been lost! The game will resume once they\'re back.');
+      this.unlock();
+    } else if (this.state.screens[client.id]) {
+      console.log(`Quizzroom ${this.code} - screen ${client.id} left.`);
+      delete this.state.screens[client.id];
+      this.state.logs.push(`Screen ${client.id} left.`);
+    }
+  }
+
+  updateGameTimer(callback) {
+    if (this.state.gamePaused) {
+      return;
+    }
+
+    this.state.gameTimer--;
+
+    if (this.state.gameTimer <= 0) {
+      this.timer.start.clear();
+      callback.call(this);
+    }
+  }
+
+  getNextQuestion() {
+    return this.questions[this.questionsAsked.length];
+  }
+
+  getLastQuestion() {
+    return _.last(this.questionsAsked);
+  }
+
+  onEnterQuestion () {
+    this.state.gameTimer = QUESTION_TIME;
+    this.state.gameTimerMax = QUESTION_TIME;
+    const question = this.getNextQuestion();
+    this.questionsAsked.push(question);
+    this.state.question = {...question};
+    this.state.question.answer = null;
+
+    const callback = () => {
+      this.fsm.vote();
+    };
+    this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
+  }
+
+  onEnterVote () {
+    this.state.gameTimer = VOTE_TIME;
+    this.state.gameTimerMax = VOTE_TIME;
+
+    const playerAnswers = _.reduce(this.state.players, (o, p) => {
+                                    if(p.answer) {
+                                      o.push(p.answer);
+                                    }
+                                    return o;
+                                  }, []);
+
+
+    let allAnswers = _.uniq([
+      ...playerAnswers,
+      this.getLastQuestion().answer.toUpperCase()
+    ]);
+    //If not enough answers, we're gonna add traps
+    const missingAnswers = _.keys(this.state.players).length - (allAnswers.length - 1);
+    allAnswers = [
+      ...allAnswers,
+      ..._.sampleSize(
+        this.getLastQuestion().traps || [],
+        missingAnswers
+      )];
+    this.state.answersChoice = _.shuffle(allAnswers).map(item => item.toUpperCase());
+
+    const callback = () => {
+      this.fsm.results();
+    };
+    this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
+  }
+
+  onEnterResults () {
+    const SCORE_CORRECT = 100;
+    const SCORE_FOOL = 100;
+    const SCORE_TRAP = -50;
+
+    this.state.gameTimer = ANSWER_TIME;
+    this.state.gameTimerMax = ANSWER_TIME;
+    this.state.question = {...this.getLastQuestion()};
+    this.state.results = {};
+
+    const data = _.reduce(this.state.players, (o, p) => {
+
+      if(p.answer) {
+        if(!o.answers[p.answer]) {
+          o.answers[p.answer] = [];
+        }
+        o.answers[p.answer].push(p);
+      }
+
+      if(p.vote) {
+        if(!o.votes[p.vote]) {
+          o.votes[p.vote] = [];
+        }
+        o.votes[p.vote].push(p);
+      }
+
+      return o;
+    }, {votes: {}, answers: {}});
+
+
+    const playerVotes = data.votes;
+    const playerAnswers = data.answers;
+
+    for (let vote in playerVotes) {
+      let players = playerVotes[vote];
+      let type = null;
+
+      if (vote === this.state.question.answer.toUpperCase()) {
+        type = 'correct';
+      } else if (playerAnswers[vote]) {
+        type = 'fool';
+      } else {
+        type = 'trap';
+      }
+
+      this.state.results[vote] = {
+        vote,
+        type,
+        players: [],
+        foolers: [],
+      };
+
+      for (let p of players) {
+        let player = this.state.players[p.id];
+        let points = 0;
+
+        if (type === 'correct') {
+          points = SCORE_CORRECT;
+
+          player.score += points;
+          this.state.results[vote].players.push({
+            name: player.name,
+            points: points,
+          });
+        }
+
+        if (type === 'trap') {
+          points = SCORE_TRAP;
+
+          player.score += points;
+          this.state.results[vote].players.push({
+            name: player.name,
+            points: points,
+          });
+        }
+
+        if (type === 'fool') {
+          let playersAnswer = playerAnswers[vote];
+          if (playersAnswer) {
+            points = SCORE_FOOL;
+            this.state.results[vote].players.push({
+              name: player.name
+            });
+            for (let a of playersAnswer) {
+              let fooler = this.state.players[a.id];
+              if (fooler.id === player.id) {
+                //You can't fool yourself
+                continue;
+              }
+              console.log(fooler.name, '+SCORE_FOOL ', `FOOLED ${player.name}`);
+              fooler.score += points;
+              this.state.results[vote].foolers.push({
+                name: fooler.name,
+                points: points,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    //Sort correct answer at the end
+    this.state.results = _.sortBy(this.state.results, (o) => o.type == 'correct')
+
+    //Reset players vote and answer
+    this.state.players = _.mapValues(this.state.players, (p) => {
+      p.answer = null;
+      p.vote = null;
+      return p;
+    });
+
+    const callback = () => {
+      this.fsm.ask();
+    };
+    this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
+  }
+
+  onEnterEnd () {
+    this.state.gameStarted = false;
+  }
+
+  onBeforeTransition (lifecycle) {
+    return true;
+  }
+
+  /**
+   * Update server state to notify clients of the new state.
+   * @param lifecycle
+   */
+  onEnterState (lifecycle) {
+    if (!this.state) {
+      return;
+    }
+
+    this.state.state = lifecycle.fsm.state;
+    this.unreadyPlayers();
+  }
+
+  pauseGame (message = '') {
+    this.state.gamePaused = true;
+    this.state.gamePausedMessage = message;
+  }
+
+  resumeGame () {
+    this.state.gamePaused = false;
+    this.state.gamePausedMessage = '';
+  }
+
+  onMessage (client, data) {
+    this.state.logs.push(`(${ client.id }) ${ JSON.stringify(data) }`);
+
+    if (data.startGame) {
+      if (!this.timer.start) {
+        const callback = () => {
+          this.lock();
+          this.fsm.start();
+        };
+        this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000)
+        this.state.gameStarted = true;
+      }
+
+      this.markPlayerIsReady(client.id);
+    }
+
+    if (data.pauseGame) {
+      if (this.timer.start) {
+        this.timer.start.clear();
+        this.timer.start = null;
+        this.state.gameTimer = LOBBY_TIME;
+        this.state.gameStarted = false;
+        this.unreadyPlayers();
+      }
+    }
+
+    if (data.answer) {
+      this.onPlayerAnswer(client, data);
+    }
+
+    if (data.resumeGame) {
+      this.onPlayerAnswer(client, data);
+    }
+
+    if (data.vote || data.vote === null) {
+      this.onPlayerVote(client, data);
+    }
+
+    if (data.startNewGame) {
+      this.fsm.newGame();
+      this.markPlayerIsReady(client.id);
+    }
+
+    if (data.newName) {
+      if(!this.state.gameStarted) {
+        this.state.players[client.id].name = data.newName;
+      }
+    }
+
+    //FOR DEBUGGING PURPOSES
+    if (data.next) {
+      this.state.gameTimer = 0;
+    }
+
+  }
+
+  onPlayerAnswer (client, data) {
+    const answer = data.answer.toUpperCase();
+    const player = this.state.players[client.id];
+
+    player.answer = answer;
+
+    this.markPlayerIsReady(player.id);
+
+  }
+
+  onPlayerVote (client, data) {
+    const vote = data.vote;
+    const player = this.state.players[client.id];
+
+    player.vote = vote;
+
+    if (!player.vote) {
+      this.markPlayerNotReady(player.id);
+    } else {
+      this.markPlayerIsReady(player.id);
+    }
+
+  }
+
+  onDispose () {
+    console.log(`Quizzroom ${this.code} - deleted.`);
+  }
+
+  markPlayerIsReady (playerId) {
+    if (!this.state.players[playerId]) {
+      return;
+    }
+    this.state.players[playerId].ready = true;
+    //If all players are ready, skip to next step.
+    if(this.areAllPlayersReady()) {
+      this.state.gameTimer = 0;
+    }
+  }
+
+  markPlayerNotReady (playerId) {
+    if (!this.state.players[playerId]) {
+      return;
+    }
+    this.state.players[playerId].ready = false;
+  }
+
+  areAllPlayersReady () {
+    return _.filter(this.state.players, function(p) { return !p.ready; }).length === 0;
+  }
+
+  disconnectedPlayers () {
+    return _.filter(this.state.players, 'disconnected');
+  }
+
+  unreadyPlayers () {
+    this.state.players = _.mapValues(this.state.players, (p) => { return {...p, ready: false}; });
+  }
+};
