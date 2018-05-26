@@ -9,7 +9,8 @@
     "dev": "npm run vue | npm run server",
     "vue": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "server": "nodemon server.js",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "babel-preset-react": "^6.24.1",
