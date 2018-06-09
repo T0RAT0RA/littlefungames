@@ -11,53 +11,14 @@ const COLORS = [
   'yellow',
 ];
 
-const QUESTIONS = [
-  {
-    text: 'La chérophobie est la peur du ____.',
-    answer: 'bonheur',
-    source: null,
-    traps: [
-      'sang',
-      'vide',
-      'chaos',
-      'bois',
-    ],
-  },
-  {
-    text: 'Un bébé poulpe est environ de la taille d\'une ____ lorsqu\'il née.',
-    answer: 'puce',
-    source: null,
-    traps: [
-      'orange',
-      'vis',
-    ],
-  },
-  {
-    text: 'Le vrai nom de Bob Dylan est ____ Zimmerman.',
-    answer: 'robert',
-    source: null,
-    traps: [
-      'john',
-      'ted',
-    ],
-  },
-  {
-    text: 'L\'oiseau de Twitter a vraiment un nom: ____.',
-    answer: 'larry',
-    source: null,
-    traps: [
-      'john',
-      'ted',
-    ],
-  },
-];
+const QUESTIONS = require('./questions.fr.json');
 
 //Times in seconds
 const LOBBY_TIME = 10;
 const QUESTION_TIME = 40;
 const VOTE_TIME = 30;
 const ANSWER_TIME = 60000;
-const MAX_QUESTIONS = 3;
+const MAX_QUESTIONS = 5;
 const MAX_PLAYERS = 8;
 
 module.exports = class QuizzRoom extends Room {
