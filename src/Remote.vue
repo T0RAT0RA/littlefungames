@@ -155,11 +155,9 @@
       },
       name: {
         get: function () {
-          console.log('GET NAME');
           return this.playerName || localStorage.getItem('name') || null;
         },
         set: function (name) {
-          console.log('SET NAME', name);
           localStorage.setItem('name', name);
           if (name){
             this.serverRoom.send({newName: name});

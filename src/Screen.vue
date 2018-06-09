@@ -3,7 +3,7 @@
     <div v-if="!isConnected">
       
       <button type="button" class="btn btn-primary btn-lg"
-              @click="create('quizz', {screen: true})">
+              @click="createGame()">
         {{ $t('New Game') }}
       </button>
       <br>{{ $t('or') }}<br>
@@ -175,9 +175,9 @@
                 </div>
               </div>
             </div>
-            <div v-if="serverState.gameStarted" class="card-footer">
+            <div v-if="serverState.gameStarted && gameState !== 'results'" class="card-footer">
               <span class="float-left" style="height: 25px; margin: 0 10px; font-weight: bold;">
-                {{ serverState.gameTimer }}s
+                {{ gameTimer }}s
               </span>
               <div class="progress" style="height: 25px">
                 <div class="progress-bar" role="progressbar"
@@ -253,6 +253,7 @@
     data () {
       return {
         isConnected: false,
+        gameTimer: null,
         roomCode: null,
         qrCode: null,
         players: {},
@@ -261,12 +262,18 @@
     created: function () {
       if (this.room){
         this.roomCode = this.room;
-        this.join('quizz', {screen: true});
+        this.join('quizz', {screen: true}).then((serverRoom) => {
+          serverRoom.onMessage.add((message) => {
+            if (message.gameTimer) {
+              this.gameTimer = message.gameTimer;
+            }
+          });
+        });
       }
     },
     computed: {
       progression: function() {
-        return Math.round(this.serverState.gameTimer / this.serverState.gameTimerMax * 100);
+        return Math.round(this.gameTimer / this.serverState.gameTimerMax * 100);
       },
       playersByScore: function() {
         if (!this.serverState.players) {
@@ -289,6 +296,15 @@
       }
     },
     methods: {
+      createGame() {
+        this.create('quizz', {screen: true}).then((serverRoom) => {
+          serverRoom.onMessage.add((message) => {
+            if (message.gameTimer) {
+              this.gameTimer = message.gameTimer;
+            }
+          });
+        });
+      },
       beforeEnter: function (el) {
         Array.from(el.children).map((node) => node.style.display = 'none')
       },

@@ -54,8 +54,8 @@ const QUESTIONS = [
 
 //Times in seconds
 const LOBBY_TIME = 10;
-const QUESTION_TIME = 30;
-const VOTE_TIME = 200;
+const QUESTION_TIME = 40;
+const VOTE_TIME = 30;
 const ANSWER_TIME = 60000;
 const MAX_QUESTIONS = 3;
 const MAX_PLAYERS = 8;
@@ -65,11 +65,11 @@ module.exports = class QuizzRoom extends Room {
     this.code = null;
     this.maxClients = MAX_PLAYERS;
     this.maxQuestions = MAX_QUESTIONS;
+    this.gameTimer = null;
 
     //This is the state sent to connected clients.
     this.setState({
       code: this.code,
-      gameTimer: null,
       gameTimerMax: null,
       gameStarted: null,
       gamePaused: false,
@@ -117,14 +117,13 @@ module.exports = class QuizzRoom extends Room {
       start: null,
     };
 
-    this.state.gameTimer = LOBBY_TIME;
+    this.setGameTimer(LOBBY_TIME);
     this.state.gameTimerMax = LOBBY_TIME;
     this.state.gameStarted = false;
     this.state.state = 'lobby';
   }
 
   requestJoin (options, isNew) {
-    console.log('requestJoin');
     if (options.code) {
       console.log('code = ', this.code, '==', options.code);
       if (this.code === null) {
@@ -140,7 +139,7 @@ module.exports = class QuizzRoom extends Room {
         return false;
       }
 
-      return options.code.toUpperCase() == this.code;
+      return options.code.toUpperCase() == this.code.toUpperCase();
     }
 
     if(!options.code) {
@@ -155,6 +154,7 @@ module.exports = class QuizzRoom extends Room {
   onJoin (client, options) {
     if (!this.code) {
       this.code = randomstring.generate({length: 6, readable: true, capitalization: 'uppercase'});
+      this.code = 'A';
       this.state.code = this.code;
     }
     if (options.screen) {
@@ -210,9 +210,9 @@ module.exports = class QuizzRoom extends Room {
       return;
     }
 
-    this.state.gameTimer--;
+    this.setGameTimer(this.gameTimer - 1);
 
-    if (this.state.gameTimer <= 0) {
+    if (this.gameTimer <= 0) {
       this.timer.start.clear();
       callback.call(this);
     }
@@ -227,7 +227,7 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterQuestion () {
-    this.state.gameTimer = QUESTION_TIME;
+    this.setGameTimer(QUESTION_TIME);
     this.state.gameTimerMax = QUESTION_TIME;
     const question = this.getNextQuestion();
     this.questionsAsked.push(question);
@@ -241,7 +241,7 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterVote () {
-    this.state.gameTimer = VOTE_TIME;
+    this.setGameTimer(VOTE_TIME);
     this.state.gameTimerMax = VOTE_TIME;
 
     const playerAnswers = _.reduce(this.state.players, (o, p) => {
@@ -277,7 +277,7 @@ module.exports = class QuizzRoom extends Room {
     const SCORE_FOOL = 100;
     const SCORE_TRAP = -50;
 
-    this.state.gameTimer = ANSWER_TIME;
+    this.setGameTimer(ANSWER_TIME);
     this.state.gameTimerMax = ANSWER_TIME;
     this.state.question = {...this.getLastQuestion()};
     this.state.results = {};
@@ -361,7 +361,6 @@ module.exports = class QuizzRoom extends Room {
                 //You can't fool yourself
                 continue;
               }
-              console.log(fooler.name, '+SCORE_FOOL ', `FOOLED ${player.name}`);
               fooler.score += points;
               this.state.results[vote].foolers.push({
                 name: fooler.name,
@@ -440,7 +439,7 @@ module.exports = class QuizzRoom extends Room {
       if (this.timer.start) {
         this.timer.start.clear();
         this.timer.start = null;
-        this.state.gameTimer = LOBBY_TIME;
+        this.setGameTimer(LOBBY_TIME);
         this.state.gameStarted = false;
         this.unreadyPlayers();
       }
@@ -471,7 +470,7 @@ module.exports = class QuizzRoom extends Room {
 
     //FOR DEBUGGING PURPOSES
     if (data.next) {
-      this.state.gameTimer = 0;
+      this.setGameTimer(0);
     }
 
   }
@@ -504,6 +503,17 @@ module.exports = class QuizzRoom extends Room {
     console.log(`Quizzroom ${this.code} - deleted.`);
   }
 
+  setGameTimer (val) {
+    this.gameTimer = val;
+    // Broadcast to screens
+    const screenClients = this.clients.filter((c) => {
+      return this.state.screens[c.id] !== undefined;
+    });
+    for (let client of screenClients) {
+      this.send(client, { gameTimer: this.gameTimer });
+    }
+  }
+
   markPlayerIsReady (playerId) {
     if (!this.state.players[playerId]) {
       return;
@@ -511,7 +521,7 @@ module.exports = class QuizzRoom extends Room {
     this.state.players[playerId].ready = true;
     //If all players are ready, skip to next step.
     if(this.areAllPlayersReady()) {
-      this.state.gameTimer = 0;
+      this.setGameTimer(0);
     }
   }
 

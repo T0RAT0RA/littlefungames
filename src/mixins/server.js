@@ -3,8 +3,8 @@ import * as Colyseus from "colyseus.js";
 export default {
   data() {
     return {
-        debug: process.env.DEBUG || false,
-        debugState: process.env.DEBUG || false,
+        debug: false,
+        debugState: false,
         client: null,
         serverError: null,
         isConnected: false,
@@ -45,16 +45,15 @@ export default {
 
   methods: {
     create: function(roomType, options) {
-      this.connect(roomType, options)
+      return this.connect(roomType, options)
     },
 
     join: function(roomType, options) {
-      console.log('JOIN METHOD', roomType, options);
       if (!this.roomCode) {
-        return;
+        return Promise.reject(new Error('missing_room_code'));
       }
 
-      this.connect(roomType, {
+      return this.connect(roomType, {
         ...options,
         code: this.roomCode
       })
@@ -66,8 +65,7 @@ export default {
       try {
         this.serverRoom = this.client.join(roomType, options);
       } catch(err) {
-        console.log('couldn\'t find room.', err);
-        return;
+        return Promise.reject(new Error(err));
       }
 
       this.serverRoom.onJoin.add(() => {
@@ -88,7 +86,9 @@ export default {
 
       this.serverRoom.listen("state", (change) => {
         this.gameState = change.value;
-      })
+      });
+
+      return Promise.resolve(this.serverRoom);
     },
   },
 }
