@@ -15,7 +15,7 @@ const QUESTIONS = require('./questions.fr.json');
 
 //Times in seconds
 const LOBBY_TIME = 10;
-const QUESTION_TIME = 40;
+const QUESTION_TIME = 30;
 const VOTE_TIME = 30;
 const ANSWER_TIME = 60000;
 const MAX_QUESTIONS = 5;

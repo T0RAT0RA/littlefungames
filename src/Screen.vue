@@ -66,7 +66,7 @@
               <div class="float-left">
                 {{ $t('Questions:') }} {{ `${serverState.questionsAsked}/${serverState.maxQuestions}` }}
               </div>
-              <div class="float-right">Room code: <b>{{ serverState.code }}</b></div>
+              <div class="float-right">{{ $t('Room code:') }} <b>{{ serverState.code }}</b></div>
             </div>
             <div class="card-body">
               <div v-if="gameState === 'lobby'">
@@ -345,6 +345,7 @@
 <i18n>
 {
   "fr": {
+    "Room code:": "Code de partie:",
     "New Game": "Nouvelle partie",
     "or": "ou",
     "Join a game:": "Rejoindre une partie : ",
