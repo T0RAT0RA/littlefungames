@@ -4,7 +4,7 @@ export default {
   data() {
     return {
         debug: false,
-        debugState: false,
+        debugState: true,
         client: null,
         serverError: null,
         isConnected: false,
@@ -17,7 +17,7 @@ export default {
 
   created: function () {
     const host = window.document.location.host.replace(/:.*/, '');
-    const ws = location.protocol.replace("http", "ws")+'//' + host + (location.port ? ':' + location.port : '');
+    const ws = location.protocol.replace("http", "ws")+'//' + host + (location.port ? ':' + 9090 : '');
     this.client = new Colyseus.Client(ws);
 
     this.client.onError.add((err) => {

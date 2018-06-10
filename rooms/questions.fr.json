@@ -75,7 +75,7 @@
     ]
   },
   {
-    "text": "En 2013, un homme riche du Michigan a acheté la maison à côté de son ex-épouse et ériger une statue de bronze géante d'un ____.",
+    "text": "En 2013, un homme riche du Michigan a acheté la maison à côté de son ex-épouse et érigé une statue de bronze géante d'un ____.",
     "answer": "majeur",
     "source": "http://gameguidecentral.com/fibbage-answers/",
     "traps": [
@@ -189,6 +189,309 @@
     "traps": [
       "fleurs",
       "bâtons"
+    ]
+  },
+  {
+    "text": "Possédant 55 000 d'entre eux, Ted Turner possède la plus grande collection privée au monde de ____.",
+    "answer": "bison",
+    "source": "http://gameguidecentral.com/fibbage-answers/",
+    "traps": [
+      "giraffe",
+      "buffle tacheté"
+    ]
+  },
+  {
+    "text": "Une étude publiée dans la revue Anthrozoo a rapporté que les vaches produisent 5% de lait de plus quand on leur donne ____.",
+    "answer": "un nom",
+    "source": "http://gameguidecentral.com/fibbage-answers/",
+    "traps": [
+      "le biberon",
+      "des bonbons"
+    ]
+  },
+  {
+    "text": "Monroe Isadore, un homme de 107 ans de l'Arkansas, est décédé au cours d'une ____.",
+    "answer": "fusillade",
+    "source": "http://gameguidecentral.com/fibbage-answers/",
+    "traps": [
+      "tempête de neige",
+      "course de bateau"
+    ]
+  },
+  {
+    "text": "Le 12 novembre 1970, George Thornton, un ingénieur des routes de l'Oregon, a eu le travail inhabituel de faire exploser _____.",
+    "answer": "une baleine échouée",
+    "source": "http://gameguidecentral.com/fibbage-answers/",
+    "traps": [
+      "une ferme",
+      "un barrage de castor"
+    ]
+  },
+  {
+    "text": "En 2013, Dell a émis un rappel après que les clients se sont plaints que leurs ordinateurs portables sentaient comme ____.",
+    "answer": "de l'urine de chat",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "des poissons morts",
+      "des pets"
+    ]
+  },
+  {
+    "text": "Selon une étude de l'Université de Jena, les personnes qui ont les visages les plus mémorables sont les personnes ____.",
+    "answer": "moches",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "obèses",
+      "mortes"
+    ]
+  },
+  {
+    "text": "Le festival sportif de Kila Raipur, qui a lieu tous les ans au Pendjab, en Inde, a de nombreux événements étranges et dangereux, dont un où les participants se trouvent sur le sol et se font ____.",
+    "answer": "écraser par un tracteur",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "enterrer vivant",
+      "démembrer"
+    ]
+  },
+  {
+    "text": "Après une réaction allergique aux stéroïdes utilisés dans le traitement de l'asthme, une femme de 28 ans a commencé à développer ____ sur sa tête plutôt que des cheveux.",
+    "answer": "des ongles",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "des fleurs",
+      "des dents"
+    ]
+  },
+  {
+    "text": "Dans une interview en 1999 avec US Weekly, l'actrice Lucy Liu a révélé qu'elle avait déjà eu une relation sexuelle avec ____.",
+    "answer": "un fantôme",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "un mort",
+      "un lapin",
+      "un fruit",
+      "dieu"
+    ]
+  },
+  {
+    "text": "La ville d'Olney (Illinois) organise un événement annuel pour ____ les écureuils.",
+    "answer": "compter",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "embrasser",
+      "raser",
+      "dresser",
+      "habiller"
+    ]
+  },
+  {
+    "text": "Walter Arnold a reçu le premier ticket pour excès de vitesse au monde en 1896 pour avoir roulé  à ____ km/h.",
+    "answer": "12,8",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "161",
+      "15",
+      "23,4",
+      "11,11"
+    ]
+  },
+  {
+    "text": "Edgar Valdez Villarreal, un leader du cartel de la drogue mexicain notoire, avait le surnom pas si effrayant \"La ____\".",
+    "answer": "barbie",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "bamba",
+      "chatte",
+      "fleur",
+      "la"
+    ]
+  },
+  {
+    "text": "Pour protester contre l'état policier en Biélorussie, un groupe suédois a largué des centaines de ____ d'un avion.",
+    "answer": "nounours",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "pistolets",
+      "poulets",
+      "roses",
+      "couteaux"
+    ]
+  },
+  {
+    "text": "L'Anatidaephobie est la peur que quelque part dans le monde un ____ vous regarde.",
+    "answer": "canard",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "roi",
+      "poisson",
+      "mime",
+      "espion"
+    ]
+  },
+  {
+    "text": "Les sécrétions anales d'un castor peuvent être utilisées comme un substitut de ____ dans certains aliments.",
+    "answer": "vanille",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "lait",
+      "sel",
+      "viande",
+      "citron"
+    ]
+  },
+  {
+    "text": "Selon une étude de Logitech, 49% des télécommandes perdues sont trouvées dans le canapé, tandis que 4% se trouvent dans ____.",
+    "answer": "le frigo",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "la voiture",
+      "le four",
+      "les toilettes",
+      "la salle de bain"
+    ]
+  },
+  {
+    "text": "En 2010, des agents des douanes à la frontière entre la Norvège et la Suède ont intercepté un camion qui tentait de faire passer 28 tonnes ____ en provenance de Chine.",
+    "answer": "d'ail",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "de sandale",
+      "d'oreiller",
+      "de bougie",
+      "de couche"
+    ]
+  },
+  {
+    "text": "En 2006, le musée de cire Madame Tussaud à New York a présenté sa première cire ____.",
+    "answer": "bébé",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "dinosaure",
+      "chien",
+      "voiture",
+      "vampire"
+    ]
+  },
+  {
+    "text": "Sur son propre site web, le magicien David Blaine a écrit: \"L'acte le plus courageux qu'un homme puisse faire est de ____\".",
+    "answer": "pleurer",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "dancer",
+      "pardonner",
+      "chanter",
+      "penser"
+    ]
+  },
+  {
+    "text": "Advanced Comfort Technology fabrique des lits d'eau pour ____.",
+    "answer": "vaches",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "bébés",
+      "chats",
+      "astronautes",
+      "poissons"
+    ]
+  },
+  {
+    "text": "L'île de las Munecas au Mexique est une attraction connue pour avoir des centaines de ____ suspendues dans ses arbres.",
+    "answer": "poupés",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "chaussures",
+      "chapeaux",
+      "cornichons",
+      "pantalons"
+    ]
+  },
+  {
+    "text": "El Colacho est un festival espagnol où les gens s'habillent comme le diable et sautent par dessus des ____.",
+    "answer": "bébés",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "vieux",
+      "serpents",
+      "piscines",
+      "braises"
+    ]
+  },
+  {
+    "text": "Une femme britannique a été arrêtée pour avoir détourné un ferry britannique et crié: \"____!\"",
+    "answer": "je suis Jack Sparrow",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "je suis un monstre",
+      "vive la france",
+      "oups désolé",
+      "je suis invincible"
+    ]
+  },
+  {
+    "text": "Afin de soulager le stress de ses étudiants, l'Université Dalhousie a créé en 2012 une salle ____.",
+    "answer": "à chiots",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "du silence",
+      "de peinture",
+      "à banjo",
+      "de massage"
+    ]
+  },
+  {
+    "text": "Cheap Chic Weddings est un concours annuel dans lequel les participants font des robes de mariée en ____.",
+    "answer": "papier toilette",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "cire",
+      "sac plastique",
+      "plume",
+      "poubelle"
+    ]
+  },
+  {
+    "text": "À 2 h 45 un jour de juin 2013, un homme d'Orlando, en Floride, a été arrêté pour avoir marché jusqu'à un policier et avoir donné des coups de poing à son ____.",
+    "answer": "cheval",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "partenaire",
+      "fils",
+      "visage",
+      "casque"
+    ]
+  },
+  {
+    "text": "Au cours des 35 dernières années, l'artiste Scott Weaver a construit une réplique de la ville de San Francisco en utilisant plus de 100 000 ____.",
+    "answer": "cure-dents",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "cheveux",
+      "flechettes",
+      "pièges à souris",
+      "cubes de sucre"
+    ]
+  },
+  {
+    "text": "Le 24 octobre 2013, un homme de Columbus, en Géorgie, a couru dans sa maison en flammes afin de sauver sa ____.",
+    "answer": "bière",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "femme",
+      "collection de VHS",
+      "lampe à lave",
+      "playstation 2"
+    ]
+  },
+  {
+    "text": "Bien que très peu conventionnel, le fermier William von Schneidau nourrit ses cochons avec ____.",
+    "answer": "de la marijuana",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "traps": [
+      "du jambon",
+      "de la cocaïne",
+      "du thé",
+      "du champagne"
     ]
   }
 ]
