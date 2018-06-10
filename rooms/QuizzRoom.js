@@ -25,7 +25,6 @@ module.exports = class QuizzRoom extends Room {
   onInit (options) {
     this.code = null;
     this.maxClients = MAX_PLAYERS;
-    this.maxQuestions = MAX_QUESTIONS;
     this.gameTimer = null;
 
     //This is the state sent to connected clients.
@@ -41,6 +40,8 @@ module.exports = class QuizzRoom extends Room {
       results: {},
       playerVotes: {},
       state: null,
+      questionsAsked: 0,
+      maxQuestions: MAX_QUESTIONS,
       logs: []
     });
 
@@ -71,7 +72,8 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterLobby() {
-    this.questions = _.sampleSize(QUESTIONS, this.maxQuestions);
+    this.questions = _.sampleSize(QUESTIONS, this.state.maxQuestions);
+    this.state.questionsAsked = 0;
     this.questionsAsked = [];
 
     this.timer = {
@@ -190,6 +192,7 @@ module.exports = class QuizzRoom extends Room {
   onEnterQuestion () {
     this.setGameTimer(QUESTION_TIME);
     this.state.gameTimerMax = QUESTION_TIME;
+    this.state.questionsAsked++;
     const question = this.getNextQuestion();
     this.questionsAsked.push(question);
     this.state.question = {...question};

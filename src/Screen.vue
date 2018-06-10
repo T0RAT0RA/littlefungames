@@ -21,9 +21,6 @@
     </div>
     
     <div v-else style="margin-top: 15px;">
-      
-      <div class="code text-right fixed-top">Room code: <b>{{ serverState.code }}</b></div>
-      
       <div class="row">
         <div class="players col-sm-3">
           <div class="card">
@@ -65,6 +62,12 @@
           </div>
           
           <div class="card">
+            <div class="card-header" style="padding: 5px 20px;">
+              <div class="float-left">
+                {{ $t('Questions:') }} {{ `${serverState.questionsAsked}/${serverState.maxQuestions}` }}
+              </div>
+              <div class="float-right">Room code: <b>{{ serverState.code }}</b></div>
+            </div>
             <div class="card-body">
               <div v-if="gameState === 'lobby'">
                 <!--<img class="card-img-top" src="//placehold.it/186x80" alt="Card image cap">-->
@@ -93,7 +96,6 @@
               
               <div v-else-if="gameState === 'results'">
                 {{ $t('Vote results') }}<br>
-                
                 <transition
                   appear
                   v-on:before-enter="beforeEnter"
@@ -324,6 +326,11 @@
             }
           });
         }
+
+        if (!votes.length) {
+          this.serverRoom.send({next: true});
+        }
+
         done()
       },
       leave: function (el, done) {
@@ -348,7 +355,8 @@
     "Lobby": "Lobby",
     "Choose one of these answer:": "Choisissez une de ces réponses:",
     "Vote results": "Résultats des votes",
-    "Final score:": "Score final:"
+    "Final score:": "Score final:",
+    "No one voted, are you kidding?": "Personne n'a voté, vous rigolez?"
   }
 }
 </i18n>
