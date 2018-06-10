@@ -241,11 +241,13 @@ module.exports = class QuizzRoom extends Room {
     const SCORE_FOOL = 100;
     const SCORE_TRAP = -50;
 
+
     this.setGameTimer(ANSWER_TIME);
     this.state.gameTimerMax = ANSWER_TIME;
     this.state.question = {...this.getLastQuestion()};
     this.state.results = {};
 
+    const correctAnswer = this.state.question.answer.toUpperCase();
     const data = _.reduce(this.state.players, (o, p) => {
 
       if(p.answer) {
@@ -273,7 +275,7 @@ module.exports = class QuizzRoom extends Room {
       let players = playerVotes[vote];
       let type = null;
 
-      if (vote === this.state.question.answer.toUpperCase()) {
+      if (vote === correctAnswer) {
         type = 'correct';
       } else if (playerAnswers[vote]) {
         type = 'fool';
@@ -334,6 +336,16 @@ module.exports = class QuizzRoom extends Room {
           }
         }
       }
+    }
+
+    //Add the correct answer, if no one voted for it
+    if (!this.state.results[correctAnswer]) {
+      this.state.results[correctAnswer] = {
+        vote: correctAnswer,
+        type: 'correct',
+        players: [],
+        foolers: [],
+      };
     }
 
     //Sort correct answer at the end

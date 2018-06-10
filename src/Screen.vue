@@ -126,6 +126,9 @@
                           class="player badge badge-info">
                         {{player.name}}
                       </div>
+                      <template v-if="!result.players.length">
+                        Personne n'a voté
+                      </template>
                       <template v-if="result.players.length == 1">
                         a voté
                       </template>
