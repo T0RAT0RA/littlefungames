@@ -17,7 +17,7 @@ export default {
 
   created: function () {
     const host = window.document.location.host.replace(/:.*/, '');
-    const ws = location.protocol.replace("http", "ws")+'//' + host + (location.port ? ':' + 9090 : '');
+    const ws = location.protocol.replace("http", "ws")+'//' + host + (location.port ? ':' + location.port : '');
     this.client = new Colyseus.Client(ws);
 
     this.client.onError.add((err) => {

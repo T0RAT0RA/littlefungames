@@ -57,8 +57,8 @@
         
         <div class="col-sm-9">
           <div class="alert alert-warning" role="alert" v-if="serverState.gamePaused">
-            {{ $t('Game is paused.') }}
-            {{ serverState.gamePausedMessage }}
+            {{ $t('Game is paused.') }}<br>
+            {{ $t(serverState.gamePausedMessage) }}
           </div>
           
           <div class="card">
@@ -114,11 +114,11 @@
                     >
                       <div class="label badge"
                         :class="{
-                          'badge-success': result.type == 'correct',
-                          'badge-secondary': result.type != 'correct'
+                          'badge-success': result.type === 'correct',
+                          'badge-secondary': result.type !== 'correct'
                         }">
                         {{result.vote}}
-                        <div v-if="result.type == 'correct'" style="font-size: 20px">Bonne réponse!</div>
+                        <div v-if="result.type === 'correct'" style="font-size: 20px">Bonne réponse!</div>
                       </div>
                       <br><br>
                       
@@ -126,31 +126,31 @@
                           class="player badge badge-info">
                         {{player.name}}
                       </div>
-                      <template v-if="!result.players.length">
+                      <template v-if="!Object.keys(result.players).length">
                         Personne n'a voté
                       </template>
-                      <template v-if="result.players.length == 1">
+                      <template v-if="Object.keys(result.players).length === 1">
                         a voté
                       </template>
-                      <template v-if="result.players.length > 1">
+                      <template v-if="Object.keys(result.players).length > 1">
                         ont voté
                       </template>
                       
-                      <div v-if="result.type == 'fool'">
+                      <div v-if="result.type === 'fool'">
                         <br><br>
                         <div v-for="player in result.foolers"
                              class="fooler badge badge-danger">
                           {{player.name}}
                         </div>
-                        <span v-if="result.foolers.length == 1">
+                        <span v-if="Object.keys(result.foolers).length === 1">
                           vous a eu!
                         </span>
-                        <span v-if="result.foolers.length > 1">
+                        <span v-if="Object.keys(result.foolers).length > 1">
                           vous ont eu!
                         </span>
                       </div>
                       
-                      <span v-if="result.type == 'trap'">
+                      <span v-if="result.type === 'trap'">
                         mais c'était un piège!
                       </span>
                     </div>
@@ -180,7 +180,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="serverState.gameStarted && gameState !== 'results'" class="card-footer">
+            <div v-if="serverState.gameStarted && gameState !== 'results' && gameTimer" class="card-footer">
               <span class="float-left" style="height: 25px; margin: 0 10px; font-weight: bold;">
                 {{ gameTimer }}s
               </span>
@@ -298,6 +298,20 @@
           this.qrCode = url;
         });
         this.$router.push({ name: 'play', params: { room: this.currentRoomCode } });
+      },
+      gameState() {
+        if (this.gameState === 'question') {
+          // Read the question out loud
+          if ('speechSynthesis' in window) {
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = this.serverState.question.text.replace('____', '');
+            msg.lang = 'fr-FR';
+            speechSynthesis.speak(msg);
+            msg.onend = (e) => {
+              console.log('Finished in ' + event.elapsedTime + ' seconds.');
+            };
+          }
+        }
       }
     },
     methods: {
@@ -316,7 +330,7 @@
       enter: function (el, done) {
         let votes = Array.from(el.children);
         
-        const TIME_DISPLAYED = 6000;
+        const TIME_DISPLAYED = 10000;
         const TIME_FADE_OUT = 250;
         
         for (let i in votes) {
@@ -353,6 +367,7 @@
     "Code": "Code",
     "Players:": "Joueurs:",
     "Game is paused.": "La partie est en pause.",
+    "A player has been lost! The game will resume once they're back.": "Un joueur a été perdu! La partie reprendra une fois tout le monde revenue.",
     "Click start on your device to start the game.": "Cliquez \"Je suis prêt\" sur votre appareil pour commencer la partie.",
     "Scan this image to join the game:": "Scannez cette image pour rejoindre la partie.",
     "Or go to:": "Ou allez à cette adresse:",
