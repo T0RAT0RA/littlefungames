@@ -56,8 +56,18 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
+    port: '8080',
     host: '0.0.0.0',
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy: {
+      '/assets': {
+        target: 'http://localhost:9090'
+      },
+      'ws://localhost:8080/': {
+        target: 'http://localhost:9090',
+        ws: true,
+      },
+    },
   },
   performance: {
     hints: false

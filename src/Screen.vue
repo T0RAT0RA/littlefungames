@@ -260,8 +260,6 @@
         isConnected: false,
         roomCode: null,
         qrCode: null,
-        beep1: new Audio('//localhost:9090'+'/dist/beep1.wav'),
-        beep2: new Audio('//localhost:9090'+'/dist/beep2.wav'),
         players: {},
       }
     },

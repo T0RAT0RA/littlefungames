@@ -6,7 +6,7 @@ const path = require("path");
 const QuizzRoom = require('./rooms/QuizzRoom');
 const app = express();
 
-const appPort = process.env.PORT || 8080;
+const appPort = process.env.PORT || 9090;
 
 const gameServer = new colyseus.Server({
   server: http.createServer(app)
