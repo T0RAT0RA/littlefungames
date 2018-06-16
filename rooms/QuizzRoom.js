@@ -1,15 +1,27 @@
 const _ = require('lodash');
+const fs = require('fs');
 const randomstring = require('randomstring');
 const Room = require('colyseus').Room;
 const Clock = require('colyseus').Clock;
 const StateMachine = require('javascript-state-machine');
 
 const COLORS = [
-  'red',
-  'blue',
-  'green',
-  'yellow',
+  '#FF0000',
+  '#D600FF',
+  '#0000FF',
+  '#FFFF00',
+  '#11DDED',
+  '#EC636A',
+  '#2D723C',
+  '#FDCF89',
+  '#777887',
+  '#3C3431',
 ];
+
+const SOUNDS = [];
+fs.readdirSync('./assets/player').forEach(file => {
+  SOUNDS.push(file);
+});
 
 const QUESTIONS = require('./questions.fr.json');
 
@@ -25,11 +37,13 @@ module.exports = class QuizzRoom extends Room {
   onInit (options) {
     this.code = null;
     this.maxClients = MAX_PLAYERS + 1; //+1 screen
-    this.gameTimer = null;
+    this.availableColors = _.shuffle(COLORS);
+    this.availableSounds = _.shuffle(SOUNDS);
 
     //This is the state sent to connected clients.
     this.setState({
       code: this.code,
+      gameTimer: LOBBY_TIME,
       gameTimerMax: null,
       gameStarted: null,
       gamePaused: false,
@@ -137,14 +151,17 @@ module.exports = class QuizzRoom extends Room {
         this.state.players[client.id].disconnected = false;
         //If all players are connected, resume the game
         if (!this.disconnectedPlayers().length) {
-          this.lock();
+          if (this.state.state !== 'lobby') {
+            this.lock();
+          }
           this.resumeGame();
         }
       } else {
         this.state.players[client.id] = {
           id: client.id,
           name: username,
-          color: 'red',
+          color: this.availableColors.pop(),
+          sound: this.availableSounds.pop(),
           score: 0,
           ready: null,
           disconnected: null,

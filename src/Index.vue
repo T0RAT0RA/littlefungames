@@ -1,7 +1,5 @@
 <template>
-  <div>
-    TODO: detect device
-  </div>
+  <div></div>
 </template>
 
 

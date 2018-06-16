@@ -4,7 +4,7 @@ export default {
   data() {
     return {
         debug: false,
-        debugState: true,
+        debugState: false,
         client: null,
         serverError: null,
         isConnected: false,

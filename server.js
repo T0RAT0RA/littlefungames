@@ -17,6 +17,7 @@ gameServer.register("quizz", QuizzRoom);
 gameServer.listen(appPort);
 
 
+app.use('/assets', express.static(path.join(__dirname+'/assets')));
 app.use('/dist', express.static(path.join(__dirname+'/dist')));
 
 app.get('*',function(req,res) {

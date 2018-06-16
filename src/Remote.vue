@@ -1,8 +1,8 @@
 <template>
   <div class="remote">
-    <div class="row" v-if="!isConnected">
+    <div class="row" v-if="!isConnected" style="padding: 1rem;">
       <div class="col">
-        <form @submit.prevent="join('quizz', {name})">
+        <form @submit.prevent="joinGame()">
           <input v-model="roomCode" autofocus
                  :placeholder="$t('Code')" size="8" maxlength="6"/>
           <button class="btn btn-secondary btn-lg" type="submit">
@@ -16,7 +16,7 @@
       </div>
     </div>
     <template v-if="isConnected">
-      <div class="row">
+      <div class="row header" :style="{background: player.color}">
         <div class="col">
           <div class="username float-right text-right">
             {{ playerName }}
@@ -90,7 +90,13 @@
   </div>
 </template>
 
-<style>
+<style scoped>
+  .row {
+    margin: 0;
+  }
+  .header {
+    margin-bottom: 15px;
+  }
   .question {
     font-size: 40px;
     line-height: normal;
@@ -129,9 +135,7 @@
     created: function () {
       if (this.room) {
         this.roomCode = this.room;
-        this.join('quizz', {
-          name: this.name,
-        });
+        this.joinGame();
       }
     },
     computed: {
@@ -169,6 +173,20 @@
       }
     },
     methods: {
+      joinGame() {
+        this.join('quizz', {
+          name: this.name,
+        }).then(this.onGameJoin);
+      },
+      onGameJoin(serverRoom) {
+        serverRoom.listen("gameTimer", (change) => {
+          if(change.value <= 0) {
+            if (window.navigator) {
+              window.navigator.vibrate(200);
+            }
+          }
+        });
+      },
       start: function () {
         this.serverRoom.send({startGame: true});
       },

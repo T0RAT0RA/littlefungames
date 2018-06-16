@@ -39,7 +39,12 @@
                   :class="{
                     'list-group-item-warning': player.disconnected
                   }">
-                <span>{{ player.name }}</span>
+                <span>
+                  <span class="player-color"
+                    :style="{ backgroundColor: player.color }"
+                  ></span>
+                  {{ player.name }}
+                </span>
                 <span>
                   <i class="fas fa-check" v-if="player.ready"></i>
                   <template v-if="player.disconnected">
@@ -217,6 +222,7 @@
   }
   .screen {
     font-size: 20px;
+    padding: 1rem;
   }
   
   .state-question, .state-vote {
@@ -244,9 +250,16 @@
   .state-vote .badge {
     margin: 0 5px;
   }
+  .player-color {
+    width: 10px;
+    height: 30px;
+    display: flex;
+    float: left;
+    margin-right: 10px;
+  }
 </style>
 
-<script>
+<script scoped>
   import QRCode from "qrcode";
   import Velocity from "velocity-animate";
   import server from "@/mixins/server.js";
@@ -266,7 +279,7 @@
     created: function () {
       if (this.room){
         this.roomCode = this.room;
-        this.join('quizz', {screen: true});
+        this.join('quizz', {screen: true}).then(this.onGameJoin);
       }
     },
     computed: {
@@ -302,11 +315,34 @@
             speechSynthesis.speak(msg);
           }
         }
+        if (this.gameState === 'vote') {
+          // Read the question out loud
+          if ('speechSynthesis' in window) {
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = this.$t("Choose one of these answer:");
+            msg.lang = 'fr-FR';
+            speechSynthesis.speak(msg);
+          }
+        }
       }
     },
     methods: {
       createGame() {
-        this.create('quizz', {screen: true});
+        this.create('quizz', {screen: true}).then(this.onGameJoin);
+      },
+      onGameJoin(serverRoom) {
+        serverRoom.listen("players/:id/:attribute", (change) => {
+          if(change.path.attribute === 'ready' && change.value) {
+            const player = this.serverState.players[change.path.id];
+            new Audio('/assets/player/'+player.sound).play();
+          }
+        });
+        serverRoom.listen("players/:id", (change) => {
+          console.log('CHANGE', change);
+          if (change.operation === "add") {
+            new Audio('/assets/player/'+change.value.sound).play();
+          }
+        });
       },
       beforeEnter: function (el) {
         Array.from(el.children).map((node) => node.style.display = 'none')
