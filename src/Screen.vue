@@ -180,9 +180,9 @@
                 </div>
               </div>
             </div>
-            <div v-if="serverState.gameStarted && gameState !== 'results' && gameTimer" class="card-footer">
+            <div v-if="serverState.gameStarted && gameState !== 'results' && serverState.gameTimer" class="card-footer">
               <span class="float-left" style="height: 25px; margin: 0 10px; font-weight: bold;">
-                {{ gameTimer }}s
+                {{ serverState.gameTimer }}s
               </span>
               <div class="progress" style="height: 25px">
                 <div class="progress-bar" role="progressbar"
@@ -258,27 +258,22 @@
     data () {
       return {
         isConnected: false,
-        gameTimer: null,
         roomCode: null,
         qrCode: null,
+        beep1: new Audio('//localhost:9090'+'/dist/beep1.wav'),
+        beep2: new Audio('//localhost:9090'+'/dist/beep2.wav'),
         players: {},
       }
     },
     created: function () {
       if (this.room){
         this.roomCode = this.room;
-        this.join('quizz', {screen: true}).then((serverRoom) => {
-          serverRoom.onMessage.add((message) => {
-            if (message.gameTimer) {
-              this.gameTimer = message.gameTimer;
-            }
-          });
-        });
+        this.join('quizz', {screen: true});
       }
     },
     computed: {
       progression: function() {
-        return Math.round(this.gameTimer / this.serverState.gameTimerMax * 100);
+        return Math.round(this.serverState.gameTimer / this.serverState.gameTimerMax * 100);
       },
       playersByScore: function() {
         if (!this.serverState.players) {
@@ -307,22 +302,13 @@
             msg.text = this.serverState.question.text.replace('____', '');
             msg.lang = 'fr-FR';
             speechSynthesis.speak(msg);
-            msg.onend = (e) => {
-              console.log('Finished in ' + event.elapsedTime + ' seconds.');
-            };
           }
         }
       }
     },
     methods: {
       createGame() {
-        this.create('quizz', {screen: true}).then((serverRoom) => {
-          serverRoom.onMessage.add((message) => {
-            if (message.gameTimer) {
-              this.gameTimer = message.gameTimer;
-            }
-          });
-        });
+        this.create('quizz', {screen: true});
       },
       beforeEnter: function (el) {
         Array.from(el.children).map((node) => node.style.display = 'none')
@@ -375,7 +361,9 @@
     "Choose one of these answer:": "Choisissez une de ces réponses:",
     "Vote results": "Résultats des votes",
     "Final score:": "Score final:",
-    "No one voted, are you kidding?": "Personne n'a voté, vous rigolez?"
+    "No one voted, are you kidding?": "Personne n'a voté, vous rigolez?",
+    "Questions:": "Questions:",
+    "This game does not exist.": "Cette partie n'existe pas."
   }
 }
 </i18n>

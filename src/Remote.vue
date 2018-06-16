@@ -22,8 +22,8 @@
             {{ playerName }}
           </div>
           <div class="timer float-left text-left">
-            <span class="col-md-1" v-if="serverState.gameStarted && gameState !== 'results' && gameTimer">
-              {{ gameTimer }}
+            <span class="col-md-1" v-if="serverState.gameStarted && gameState !== 'results' && serverState.gameTimer">
+              {{ serverState.gameTimer }}
             </span>
             <span v-if="serverState.gamePaused" style="font-size: 30px">
               {{ $t('Game is paused.') }}
@@ -46,11 +46,8 @@
             </button>
           </div>
           <div v-else-if="gameState === 'question'">
-            <div class="question">
-              {{ serverState.question.text }}
-            </div>
             <input class="answer"
-                   v-model="playerAnswer"
+                   ref="answerInput"
                    :placeholder="$t('Your answer')"
                    @keyup.enter="answer"
                    style="margin-bottom: 10px;"
@@ -60,6 +57,9 @@
             </button>
           </div>
           <div v-else-if="gameState === 'vote'">
+            <div class="question">
+              {{ serverState.question.text }}
+            </div>
             <div class="card">
               <div class="card-header">
                 {{ $t('Choose an answer:') }}
@@ -77,9 +77,6 @@
             </div>
           
           </div>
-          <!--<div v-else-if="gameState === 'results'">-->
-          <!--ANSWER: <b>{{ serverState.question.answer }}</b>-->
-          <!--</div>-->
           <div v-else-if="gameState === 'end'">
             <button @click="restart"
                     v-if="!player.ready"
@@ -95,7 +92,7 @@
 
 <style>
   .question {
-    font-size: 30px;
+    font-size: 40px;
     line-height: normal;
     margin: 10px 0;
   }
@@ -127,7 +124,6 @@
         playerAnswerSent: null,
         playerAnswer: null,
         choosenAnswer: null,
-        gameTimer: null,
       }
     },
     created: function () {
@@ -135,12 +131,6 @@
         this.roomCode = this.room;
         this.join('quizz', {
           name: this.name,
-        }).then((serverRoom) => {
-          serverRoom.onMessage.add((message) => {
-            if (message.gameTimer) {
-              this.gameTimer = message.gameTimer;
-            }
-          });
         });
       }
     },
@@ -189,12 +179,13 @@
         this.serverRoom.send({pauseGame: true});
       },
       answer: function () {
-        if (!this.playerAnswer) {
+        const answer = this.$refs.answerInput;
+        if (!answer.value) {
           return;
         }
-        this.serverRoom.send({answer: this.playerAnswer});
-        this.playerAnswerSent = JSON.parse(JSON.stringify(this.playerAnswer));
-        this.playerAnswer = null;
+        this.serverRoom.send({answer: answer.value});
+        this.playerAnswerSent = answer.value;
+        answer.value = null;
       },
       vote: function (answer) {
         if (this.choosenAnswer === answer) {
@@ -223,7 +214,8 @@
     "Your answer": "Votre réponse:",
     "Send": "Envoyer",
     "Choose an answer:": "Choisissez une réponse",
-    "Continue playing": "Continuer à jouer"
+    "Continue playing": "Continuer à jouer",
+    "This game does not exist.": "Cette partie n'existe pas."
   }
 }
 </i18n>

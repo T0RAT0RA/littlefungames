@@ -80,7 +80,7 @@ module.exports = class QuizzRoom extends Room {
       start: null,
     };
 
-    this.setGameTimer(LOBBY_TIME);
+    this.state.gameTimer = LOBBY_TIME;
     this.state.gameTimerMax = LOBBY_TIME;
     this.state.gameStarted = false;
     this.state.state = 'lobby';
@@ -174,9 +174,9 @@ module.exports = class QuizzRoom extends Room {
       return;
     }
 
-    this.setGameTimer(this.gameTimer - 1);
+    this.state.gameTimer--;
 
-    if (this.gameTimer <= 0) {
+    if (this.state.gameTimer <= 0) {
       this.timer.start.clear();
       callback.call(this);
     }
@@ -191,7 +191,7 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterQuestion () {
-    this.setGameTimer(QUESTION_TIME);
+    this.state.gameTimer = QUESTION_TIME;
     this.state.gameTimerMax = QUESTION_TIME;
     this.state.questionsAsked++;
     const question = this.getNextQuestion();
@@ -206,7 +206,7 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterVote () {
-    this.setGameTimer(VOTE_TIME);
+    this.state.gameTimer = VOTE_TIME;
     this.state.gameTimerMax = VOTE_TIME;
 
     const playerAnswers = _.reduce(this.state.players, (o, p) => {
@@ -243,7 +243,7 @@ module.exports = class QuizzRoom extends Room {
     const SCORE_TRAP = -200;
 
 
-    this.setGameTimer(ANSWER_TIME);
+    this.state.gameTimer = ANSWER_TIME;
     this.state.gameTimerMax = ANSWER_TIME;
     this.state.question = {...this.getLastQuestion()};
     this.state.results = {};
@@ -442,7 +442,7 @@ module.exports = class QuizzRoom extends Room {
 
     //FOR DEBUGGING PURPOSES
     if (data.next) {
-      this.setGameTimer(0);
+      this.state.gameTimer = 0;
     }
 
   }
@@ -475,11 +475,6 @@ module.exports = class QuizzRoom extends Room {
     console.log(`Quizzroom ${this.code} - deleted.`);
   }
 
-  setGameTimer (val) {
-    this.gameTimer = val;
-    this.broadcast({ gameTimer: this.gameTimer });
-  }
-
   markPlayerIsReady (playerId, allPlayerReadyTimer = true) {
     if (!this.state.players[playerId]) {
       return;
@@ -487,7 +482,7 @@ module.exports = class QuizzRoom extends Room {
     this.state.players[playerId].ready = true;
     //If all players are ready, skip to next step.
     if(allPlayerReadyTimer && this.areAllPlayersReady()) {
-      this.setGameTimer(0);
+      this.state.gameTimer = 0;
     }
   }
 
@@ -511,13 +506,13 @@ module.exports = class QuizzRoom extends Room {
   }
 
   pauseLobby () {
-    if (!this.timer.start) {
+    if (!this.timer.start || this.state.state !== 'lobby') {
       return;
     }
 
     this.timer.start.clear();
     this.timer.start = null;
-    this.setGameTimer(LOBBY_TIME);
+    this.state.gameTimer = LOBBY_TIME;
     this.state.gameStarted = false;
     this.unreadyPlayers();
   }
