@@ -130,7 +130,7 @@ module.exports = class QuizzRoom extends Room {
 
   onJoin (client, options) {
     if (!this.code) {
-      this.code = randomstring.generate({length: 6, readable: true, capitalization: 'uppercase'});
+      this.code = process.env.ROOM_CODE || randomstring.generate({length: 6, readable: true, capitalization: 'uppercase'});
       this.state.code = this.code;
     }
     if (options.screen) {
