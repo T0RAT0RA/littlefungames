@@ -128,7 +128,9 @@
                       <br><br>
                       
                       <div v-for="player in result.players"
-                          class="player badge badge-info">
+                          class="player badge badge-info"
+                          :style="playerColorStyle(player)"
+                      >
                         {{player.name}}
                       </div>
                       <template v-if="!Object.keys(result.players).length">
@@ -144,7 +146,9 @@
                       <div v-if="result.type === 'fool'">
                         <br><br>
                         <div v-for="player in result.foolers"
-                             class="fooler badge badge-danger">
+                             class="fooler badge badge-info"
+                          :style="playerColorStyle(player)"
+                        >
                           {{player.name}}
                         </div>
                         <span v-if="Object.keys(result.foolers).length === 1">
@@ -261,6 +265,7 @@
 
 <script scoped>
   import QRCode from "qrcode";
+  import Color from 'color';
   import Velocity from "velocity-animate";
   import server from "@/mixins/server.js";
 
@@ -296,7 +301,7 @@
       },
       gameURL: function() {
         return `${window.location.protocol}//${window.location.host}/remote/${this.currentRoomCode}`;
-      }
+      },
     },
     watch: {
       currentRoomCode: function() {
@@ -327,6 +332,12 @@
       }
     },
     methods: {
+      playerColorStyle(player) {
+        return {
+          'background-color': `${player.color}`,
+          'color': Color(player.color).isDark()? '#FFF' : '#000',
+        };
+      },
       createGame() {
         this.create('quizz', {screen: true}).then(this.onGameJoin);
       },

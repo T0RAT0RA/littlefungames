@@ -317,8 +317,8 @@ module.exports = class QuizzRoom extends Room {
 
           player.score += points;
           this.state.results[vote].players[player.name] = {
-            name: player.name,
             points: points,
+            ...player,
           };
         }
 
@@ -327,8 +327,8 @@ module.exports = class QuizzRoom extends Room {
 
           player.score += points;
           this.state.results[vote].players[player.name] = {
-            name: player.name,
             points: points,
+            ...player,
           };
         }
 
@@ -337,7 +337,7 @@ module.exports = class QuizzRoom extends Room {
           if (playersAnswer) {
             points = SCORE_FOOL;
             this.state.results[vote].players[player.name] = {
-              name: player.name
+              ...player,
             };
 
             for (let a of playersAnswer) {
@@ -348,8 +348,8 @@ module.exports = class QuizzRoom extends Room {
               }
               fooler.score += points;
               this.state.results[vote].foolers[fooler.name] = {
-                name: fooler.name,
                 points: points,
+                ...fooler,
               };
             }
           }
