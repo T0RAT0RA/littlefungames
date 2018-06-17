@@ -16,7 +16,7 @@
       </div>
     </div>
     <template v-if="isConnected">
-      <div class="row header" :style="{background: player.color}">
+      <div class="row header" :style="headerStyle">
         <div class="col">
           <div class="username float-right text-right">
             {{ playerName }}
@@ -118,6 +118,7 @@
 </style>
 
 <script>
+  import Color from 'color';
   import server from "@/mixins/server.js";
 
   export default {
@@ -165,7 +166,13 @@
         });
         console.log(this.playerAnswerSent.toUpperCase(), choices);
         return choices;
-      }
+      },
+      headerStyle() {
+        return {
+          background: this.player.color,
+          color: Color(this.player.color).isDark()? '#FFF' : '#000',
+        };
+      },
     },
     watch: {
       currentRoomCode: function() {

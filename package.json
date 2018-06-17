@@ -15,6 +15,7 @@
   "dependencies": {
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "color": "^3.0.0",
     "colyseus": "^0.9.3",
     "colyseus-cli": "^0.4.2",
     "colyseus-monitor": "^0.4.1",
