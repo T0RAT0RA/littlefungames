@@ -274,10 +274,17 @@
     mixins: [server],
     props: ['room'],
     data () {
+      let speech = null;
+      if ('speechSynthesis' in window) {
+        speech = new SpeechSynthesisUtterance();
+        speech.lang = 'fr-FR';
+      }
+
       return {
         isConnected: false,
         roomCode: null,
         qrCode: null,
+        speech,
         players: {},
       }
     },
@@ -311,22 +318,21 @@
         this.$router.push({ name: 'play', params: { room: this.currentRoomCode } });
       },
       gameState() {
+        if ('speechSynthesis' in window) {
+          speechSynthesis.cancel()
+        }
+
         if (this.gameState === 'question') {
           // Read the question out loud
-          if ('speechSynthesis' in window) {
-            const msg = new SpeechSynthesisUtterance();
-            msg.text = this.serverState.question.text.replace('____', '');
-            msg.lang = 'fr-FR';
-            speechSynthesis.speak(msg);
+          if (this.speech) {
+            this.speech.text = this.serverState.question.text.replace('____', '');
+            speechSynthesis.speak(this.speech);
           }
         }
         if (this.gameState === 'vote') {
-          // Read the question out loud
-          if ('speechSynthesis' in window) {
-            const msg = new SpeechSynthesisUtterance();
-            msg.text = this.$t("Choose one of these answer:");
-            msg.lang = 'fr-FR';
-            speechSynthesis.speak(msg);
+          if (this.speech) {
+            this.speech.text = this.$t("Choose one of these answer:");
+            speechSynthesis.speak(this.speech);
           }
         }
       }
