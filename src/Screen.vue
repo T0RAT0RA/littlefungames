@@ -283,6 +283,9 @@
       const timer = new Audio('/assets/timer.mp3');
       timer.volume = 0.1;
 
+      const results = new Audio('/assets/results.mp3');
+      results.volume = 0.1;
+
       const theme = new Audio('/assets/main_theme_long.mp3');
       theme.loop = true;
       theme.volume = 0.1;
@@ -298,6 +301,7 @@
         sounds: {
           theme,
           timer,
+          results,
         },
         speech,
         players: {},
@@ -344,6 +348,9 @@
         this.clearSounds();
         if (this.gameState === 'lobby') {
           this.sounds.theme.play();
+        }
+        if (this.gameState === 'results') {
+          this.sounds.results.play();
         }
 
         if (this.gameState === 'question') {
