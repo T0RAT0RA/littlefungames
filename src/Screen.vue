@@ -281,11 +281,11 @@
       }
 
       const timer = new Audio('/assets/timer.mp3');
-      timer.volume = 0.2;
+      timer.volume = 0.1;
 
       const theme = new Audio('/assets/main_theme_long.mp3');
       theme.loop = true;
-      theme.volume = 0.2;
+      theme.volume = 0.1;
       theme.addEventListener('ended', function() {
           this.currentTime = 0;
           this.play();
