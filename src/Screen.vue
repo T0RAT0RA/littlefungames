@@ -334,12 +334,14 @@
         serverRoom.listen("players/:id/:attribute", (change) => {
           if(change.path.attribute === 'ready' && change.value) {
             const player = this.serverState.players[change.path.id];
+            console.log('players/:id/:attribute', player, change);
             new Audio('/assets/player/'+player.sound).play();
           }
         });
         serverRoom.listen("players/:id", (change) => {
           console.log('CHANGE', change);
           if (change.operation === "add") {
+            console.log('players/:id add', change);
             new Audio('/assets/player/'+change.value.sound).play();
           }
         });
