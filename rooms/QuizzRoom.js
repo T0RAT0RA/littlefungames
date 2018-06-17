@@ -459,7 +459,7 @@ module.exports = class QuizzRoom extends Room {
 
     //FOR DEBUGGING PURPOSES
     if (data.next) {
-      this.state.gameTimer = 0;
+      this.state.gameTimer = 1;
     }
 
   }
@@ -499,7 +499,7 @@ module.exports = class QuizzRoom extends Room {
     this.state.players[playerId].ready = true;
     //If all players are ready, skip to next step.
     if(allPlayerReadyTimer && this.areAllPlayersReady()) {
-      this.state.gameTimer = 0;
+      this.state.gameTimer = 2;
     }
   }
 

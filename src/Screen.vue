@@ -280,10 +280,25 @@
         speech.lang = 'fr-FR';
       }
 
+      const timer = new Audio('/assets/timer.mp3');
+      timer.volume = 0.2;
+
+      const theme = new Audio('/assets/main_theme_long.mp3');
+      theme.loop = true;
+      theme.volume = 0.2;
+      theme.addEventListener('ended', function() {
+          this.currentTime = 0;
+          this.play();
+      }, false);
+
       return {
         isConnected: false,
         roomCode: null,
         qrCode: null,
+        sounds: {
+          theme,
+          timer,
+        },
         speech,
         players: {},
       }
@@ -293,6 +308,9 @@
         this.roomCode = this.room;
         this.join('quizz', {screen: true}).then(this.onGameJoin);
       }
+    },
+    destroyed() {
+      this.clearSounds()
     },
     computed: {
       progression: function() {
@@ -317,12 +335,19 @@
         });
         this.$router.push({ name: 'play', params: { room: this.currentRoomCode } });
       },
+      'serverState.gameTimer'() {
+        if ((this.gameState === 'question' || this.gameState === 'vote') && this.serverState.gameTimer <= 2) {
+          this.sounds.timer.currentTime = 28.515;
+        }
+      },
       gameState() {
-        if ('speechSynthesis' in window) {
-          speechSynthesis.cancel()
+        this.clearSounds();
+        if (this.gameState === 'lobby') {
+          this.sounds.theme.play();
         }
 
         if (this.gameState === 'question') {
+          this.sounds.timer.play();
           // Read the question out loud
           if (this.speech) {
             this.speech.text = this.serverState.question.text.replace('____', '');
@@ -330,6 +355,7 @@
           }
         }
         if (this.gameState === 'vote') {
+          this.sounds.timer.play();
           if (this.speech) {
             this.speech.text = this.$t("Choose one of these answer:");
             speechSynthesis.speak(this.speech);
@@ -338,6 +364,16 @@
       }
     },
     methods: {
+      clearSounds() {
+        if ('speechSynthesis' in window) {
+          speechSynthesis.cancel()
+        }
+        for (const i in this.sounds) {
+          const sound = this.sounds[i];
+          sound.pause();
+          sound.currentTime = 0;
+        }
+      },
       playerColorStyle(player) {
         return {
           'background-color': `${player.color}`,
@@ -351,14 +387,11 @@
         serverRoom.listen("players/:id/:attribute", (change) => {
           if(change.path.attribute === 'ready' && change.value) {
             const player = this.serverState.players[change.path.id];
-            console.log('players/:id/:attribute', player, change);
             new Audio('/assets/player/'+player.sound).play();
           }
         });
         serverRoom.listen("players/:id", (change) => {
-          console.log('CHANGE', change);
           if (change.operation === "add") {
-            console.log('players/:id add', change);
             new Audio('/assets/player/'+change.value.sound).play();
           }
         });
