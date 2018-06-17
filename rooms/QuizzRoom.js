@@ -30,7 +30,7 @@ const LOBBY_TIME = 5;
 const QUESTION_TIME = 40;
 const VOTE_TIME = 30;
 const ANSWER_TIME = 60000;
-const MAX_QUESTIONS = 5;
+const MAX_QUESTIONS = process.env.QUESTIONS || 5;
 const MAX_PLAYERS = 10;
 
 module.exports = class QuizzRoom extends Room {
@@ -499,7 +499,7 @@ module.exports = class QuizzRoom extends Room {
     this.state.players[playerId].ready = true;
     //If all players are ready, skip to next step.
     if(allPlayerReadyTimer && this.areAllPlayersReady()) {
-      this.state.gameTimer = 2;
+      this.state.gameTimer = 1;
     }
   }
 
@@ -523,14 +523,18 @@ module.exports = class QuizzRoom extends Room {
   }
 
   pauseLobby () {
-    if (!this.timer.start || this.state.state !== 'lobby') {
+    if (this.state.state !== 'lobby') {
       return;
     }
 
-    this.timer.start.clear();
-    this.timer.start = null;
+    this.unreadyPlayers();
+
+    if(this.timer.start) {
+      this.timer.start.clear();
+      this.timer.start = null;
+    }
+
     this.state.gameTimer = LOBBY_TIME;
     this.state.gameStarted = false;
-    this.unreadyPlayers();
   }
 };
