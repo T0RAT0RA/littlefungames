@@ -100,7 +100,6 @@
               </div>
               
               <div v-else-if="gameState === 'results'">
-                {{ $t('Vote results') }}<br>
                 <transition
                   appear
                   v-on:before-enter="beforeEnter"
@@ -117,51 +116,41 @@
                            trap: result.type == 'trap',
                          }"
                     >
-                      <div class="label badge"
-                        :class="{
-                          'badge-success': result.type === 'correct',
-                          'badge-secondary': result.type !== 'correct'
-                        }">
-                        {{result.vote}}
-                        <div v-if="result.type === 'correct'" style="font-size: 20px">Bonne réponse!</div>
-                      </div>
-                      <br><br>
-                      
-                      <div v-for="player in result.players"
-                          class="player badge badge-info"
-                          :style="playerColorStyle(player)"
-                      >
-                        {{player.name}}
-                      </div>
-                      <template v-if="!Object.keys(result.players).length">
-                        Personne n'a voté
-                      </template>
-                      <template v-if="Object.keys(result.players).length === 1">
-                        a voté
-                      </template>
-                      <template v-if="Object.keys(result.players).length > 1">
-                        ont voté
-                      </template>
-                      
-                      <div v-if="result.type === 'fool'">
-                        <br><br>
-                        <div v-for="player in result.foolers"
-                             class="fooler badge badge-info"
-                          :style="playerColorStyle(player)"
-                        >
-                          {{player.name}}
-                        </div>
-                        <span v-if="Object.keys(result.foolers).length === 1">
-                          vous a eu!
-                        </span>
-                        <span v-if="Object.keys(result.foolers).length > 1">
-                          vous ont eu!
+                      <div class="label badge badge-primary">
+                        <span>{{result.vote}}</span>
+                        <span class="result" style="display: none;">
+                          <template v-if="result.type === 'correct'">
+                            BONNE RÉPONSE!<br>
+                            
+                            <span v-if="Object.keys(result.players).length <= 0">
+                              mais personne n'a trouvé...
+                            </span>
+                          </template>
+                          <template v-if="result.type === 'trap'">C'ÉTAIT UN PIÈGE!</template>
+                          <template v-if="result.type === 'fool'">
+                            <span v-for="player in result.foolers"
+                                 class="fooler badge badge-info"
+                                :style="playerColorStyle(player)"
+                            >
+                              {{player.name}}
+                            </span><br>
+                            <span v-if="Object.keys(result.foolers).length === 1">
+                              vous a eu!
+                            </span>
+                            <span v-if="Object.keys(result.foolers).length > 1">
+                              vous ont eu!
+                            </span>
+                          </template>
                         </span>
                       </div>
-                      
-                      <span v-if="result.type === 'trap'">
-                        mais c'était un piège!
-                      </span>
+                      <div class="players">
+                        <template v-for="(player, i) in result.players">
+                          <div class="player badge badge-info"
+                              :style="playerColorStyle(player)">
+                            {{player.name}}
+                          </div>
+                        </template>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -230,11 +219,11 @@
   }
   
   .state-question, .state-vote {
-    font-size: 40px;
+    font-size: 30px;
   }
   
   .result .label {
-    font-size: 70px;
+    font-size: 40px;
   }
   
   .result .player, .result .fooler {
@@ -261,11 +250,36 @@
     float: left;
     margin-right: 10px;
   }
+  
+  
+  .result .vote {
+    display: inline-block;
+  }
+  .result .vote .label {
+    text-align: center;
+    padding: 20px;
+    transform: scale(0);
+  }
+  .result .vote .players {
+    width: 700px;
+  }
+  .result .vote .player {
+    transform: scale(0);
+    background: #2db34a;
+    float: left;
+    padding: 5px;
+    text-align: center;
+    position: relative;
+    top: -25px;
+    margin: 5px 10px;
+  }
 </style>
 
 <script scoped>
   import QRCode from "qrcode";
   import Color from 'color';
+  import random from 'random';
+  import { tween, styler, timeline } from 'popmotion';
   import Velocity from "velocity-animate";
   import server from "@/mixins/server.js";
 
@@ -285,6 +299,19 @@
 
       const results = new Audio('/assets/results.mp3');
       results.volume = 0.1;
+      
+      const roll = new Audio('/assets/roll.mp3');
+      roll.volume = 0.4;
+      roll.addEventListener('ended', function() {
+          this.currentTime = 0;
+          this.play();
+      }, false);
+      
+      const correct = new Audio('/assets/quizz_answer_correct.mp3');
+      correct.volume = 0.2;
+
+      const wrong = new Audio('/assets/quizz_answer_wrong.mp3');
+      wrong.volume = 0.2;
 
       const theme = new Audio('/assets/main_theme_long.mp3');
       theme.loop = true;
@@ -298,10 +325,14 @@
         isConnected: false,
         roomCode: null,
         qrCode: null,
+        random,
         sounds: {
           theme,
           timer,
           results,
+          roll,
+          correct,
+          wrong,
         },
         speech,
         players: {},
@@ -350,7 +381,7 @@
           this.sounds.theme.play();
         }
         if (this.gameState === 'results') {
-          this.sounds.results.play();
+          // this.sounds.results.play();
         }
 
         if (this.gameState === 'question') {
@@ -407,25 +438,85 @@
         Array.from(el.children).map((node) => node.style.display = 'none')
       },
       enter: function (el, done) {
-        let votes = Array.from(el.children);
-        
-        const TIME_DISPLAYED = 10000;
-        const TIME_FADE_OUT = 250;
-        
-        for (let i in votes) {
-          let vote = votes[i];
-          
-          Velocity(vote, 'fadeIn', { display: 'block', delay: i * (TIME_FADE_OUT + TIME_DISPLAYED + 1000) });
-          Velocity(vote, "fadeOut", { delay: TIME_DISPLAYED}).then(() => {
-            if (parseInt(i)+1 === votes.length) {
-              this.serverRoom.send({next: true});
-            }
-          });
-        }
-
-        if (!votes.length) {
+        const votes = Array.from(document.querySelectorAll('.result .vote'));
+        votes.reduce((promise, vote, index) => {
+          return promise
+            .then((result) => {
+              const animations = new Promise((resolve, reject) => {
+                this.sounds.roll.currentTime = 0;
+                this.sounds.roll.play();
+                vote.style.display = 'block';
+                const label = vote.querySelector('.label');
+                const labelStyler = styler(label);
+                const instructions = [];
+                
+                instructions.push(
+                  {
+                    track: 'label',
+                    from: { scale: 0 },
+                    to: { scale: 1 },
+                    duration: 1000,
+                  }
+                );
+                
+                const players = Array.from(vote.querySelectorAll('.player'));
+                const playerStylers = [];
+                players.forEach((player, j) => {
+                  playerStylers.push(styler(player));
+                  instructions.push(
+                    {
+                      track: `player-${j}`,
+                      from: { scale: 0, rotate: 0 },
+                      to: { scale: 1, rotate: random.int(-15, 15) },
+                      duration: 100,
+                    }
+                  );
+                });
+                instructions.push(
+                  {
+                    track: 'delay',
+                    duration: random.float(2, 4) * 1000,
+                  }
+                );
+                timeline(instructions).start({
+                  update: (v) => {
+                    labelStyler.set(v.label);
+                    for(const k in playerStylers) {
+                      playerStylers[k].set(v[`player-${k}`]);
+                    }
+                  },
+                  complete: () => {
+                    this.sounds.roll.pause();
+                    label.classList.remove("badge-primary");
+                    this.sounds.correct.currentTime = 0;
+                    this.sounds.wrong.currentTime = 0;
+                    label.querySelector('.result').style.display = 'inline-block';
+                    label.querySelector(':not(.result)').style.display = 'none';
+                    
+                    if (vote.classList.contains('correct')) {
+                      this.sounds.correct.play();
+                      label.classList.add("badge-success");
+                    } else {
+                      this.sounds.wrong.play();
+                      label.classList.add("badge-danger");
+                    }
+                    
+                    setTimeout(() => {
+                      vote.style.display = 'none';
+                      resolve();
+                    }, 4000)
+                  }
+                });
+              });
+              return animations;
+            });
+        }, Promise.resolve()).then(() => {
           this.serverRoom.send({next: true});
-        }
+        });
+
+        // if (!votes.length) {
+        //   this.serverRoom.send({next: true});
+        // }
 
         done()
       },
@@ -447,7 +538,7 @@
     "Players:": "Joueurs:",
     "Game is paused.": "La partie est en pause.",
     "A player has been lost! The game will resume once they're back.": "Un joueur a été perdu! La partie reprendra une fois tout le monde revenue.",
-    "Click start on your device to start the game.": "Cliquez \"Je suis prêt\" sur votre appareil pour commencer la partie.",
+    "Click \"Start the game\" on your device to start the game.": "Cliquez \"Démarrer la partie\" sur votre appareil pour commencer la partie.",
     "Scan this image to join the game:": "Scannez cette image pour rejoindre la partie.",
     "Or go to:": "Ou allez à cette adresse:",
     "Lobby": "Lobby",
