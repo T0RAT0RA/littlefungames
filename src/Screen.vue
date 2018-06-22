@@ -291,31 +291,32 @@
       let speech = null;
       if ('speechSynthesis' in window) {
         speech = new SpeechSynthesisUtterance();
+        speech.volume = 0.6;
         speech.lang = 'fr-FR';
       }
 
       const timer = new Audio('/assets/timer.mp3');
-      timer.volume = 0.1;
+      timer.volume = 0.3;
 
       const results = new Audio('/assets/results.mp3');
-      results.volume = 0.1;
+      results.volume = 0.3;
       
       const roll = new Audio('/assets/roll.mp3');
-      roll.volume = 0.4;
+      roll.volume = 0.6;
       roll.addEventListener('ended', function() {
           this.currentTime = 0;
           this.play();
       }, false);
       
       const correct = new Audio('/assets/quizz_answer_correct.mp3');
-      correct.volume = 0.2;
+      correct.volume = 0.4;
 
       const wrong = new Audio('/assets/quizz_answer_wrong.mp3');
-      wrong.volume = 0.2;
+      wrong.volume = 0.4;
 
       const theme = new Audio('/assets/main_theme_long.mp3');
       theme.loop = true;
-      theme.volume = 0.1;
+      theme.volume = 0.3;
       theme.addEventListener('ended', function() {
           this.currentTime = 0;
           this.play();
@@ -380,8 +381,9 @@
         if (this.gameState === 'lobby') {
           this.sounds.theme.play();
         }
-        if (this.gameState === 'results') {
-          // this.sounds.results.play();
+
+        if (this.gameState === 'end') {
+          this.sounds.results.play();
         }
 
         if (this.gameState === 'question') {
