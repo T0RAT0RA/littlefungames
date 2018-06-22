@@ -477,7 +477,7 @@
                 instructions.push(
                   {
                     track: 'delay',
-                    duration: random.float(2, 4) * 1000,
+                    duration: random.float(1.5, 3) * 1000,
                   }
                 );
                 timeline(instructions).start({
