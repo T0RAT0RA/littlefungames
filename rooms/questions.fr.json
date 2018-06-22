@@ -684,5 +684,38 @@
       "du thé",
       "du champagne"
     ]
+  },
+  {
+    "text": "En 1977, Simulations Publications, Inc. a publié un jeu de société étrangement nommé \"After The ____\".",
+    "answer": "holocaust",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "alternateSpellings": [
+      "holocost",
+      "hollocost",
+      "hollocaust",
+      "de la marjuana",
+      "du pot"
+    ],
+    "traps":[
+      "shooting",
+      "suicide",
+      "school",
+      "race"
+    ]
+  },
+  {
+    "text": "Avertissement réel sur le sèche-cheveux Vidal Sassoon: \"Ne pas utiliser entrain de ____.\".",
+    "answer": "dormir",
+    "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
+    "alternateSpellings": [
+      "faire dodo",
+      "faire une sieste"
+    ],
+    "traps":[
+      "pisser",
+      "nager",
+      "penser",
+      "voler"
+    ]
   }
 ]
