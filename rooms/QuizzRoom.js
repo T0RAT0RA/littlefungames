@@ -27,9 +27,10 @@ const QUESTIONS = require('./questions.fr.json');
 
 //Times in seconds
 const LOBBY_TIME = 5;
-const QUESTION_TIME = 40;
+const QUESTION_TIME = 30;
+const QUESTION_TIME_DELAY = 6;
 const VOTE_TIME = 30;
-const ANSWER_TIME = 60000;
+const RESULT_TIME = null; //null means infinite
 const MAX_QUESTIONS = process.env.QUESTIONS || 5;
 const MAX_PLAYERS = 10;
 
@@ -187,7 +188,7 @@ module.exports = class QuizzRoom extends Room {
   }
 
   updateGameTimer(callback) {
-    if (this.state.gamePaused) {
+    if (this.state.gamePaused || this.state.gameTimer === null) {
       return;
     }
 
@@ -208,8 +209,8 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterQuestion () {
-    this.state.gameTimer = QUESTION_TIME;
-    this.state.gameTimerMax = QUESTION_TIME;
+    this.state.gameTimer = null;
+    this.state.gameTimerMax = null;
     this.state.questionsAsked++;
     const question = this.getNextQuestion();
     this.questionsAsked.push(question);
@@ -218,7 +219,13 @@ module.exports = class QuizzRoom extends Room {
     const callback = () => {
       this.fsm.vote();
     };
-    this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
+    setTimeout(() => {
+        this.state.gameTimer = QUESTION_TIME;
+        this.state.gameTimerMax = QUESTION_TIME;
+        this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
+      },
+      QUESTION_TIME_DELAY * 1000
+    );
   }
 
   onEnterVote () {
@@ -258,9 +265,8 @@ module.exports = class QuizzRoom extends Room {
     const SCORE_FOOL = 500;
     const SCORE_TRAP = -200;
 
-
-    this.state.gameTimer = ANSWER_TIME;
-    this.state.gameTimerMax = ANSWER_TIME;
+    this.state.gameTimer = RESULT_TIME;
+    this.state.gameTimerMax = RESULT_TIME;
     this.state.question = {...this.getLastQuestion()};
     this.state.results = {};
 

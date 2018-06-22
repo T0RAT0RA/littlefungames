@@ -261,16 +261,15 @@
     transform: scale(0);
   }
   .result .vote .players {
-    width: 700px;
+    width: 100%;
   }
   .result .vote .player {
     transform: scale(0);
     background: #2db34a;
-    float: left;
     padding: 5px;
     text-align: center;
     position: relative;
-    top: -25px;
+    top: -20px;
     margin: 5px 10px;
   }
 </style>
