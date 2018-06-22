@@ -3,7 +3,8 @@
     "text": "La chérophobie est la peur du ____.",
     "answer": "bonheur",
     "source": null,
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "sang",
       "vide",
       "chaos",
@@ -14,36 +15,47 @@
     "text": "Un bébé poulpe est environ de la taille d'une ____ lorsqu'il née.",
     "answer": "puce",
     "source": null,
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "orange",
-      "vis"
+      "vis",
+      "balle de golfe",
+      "quille"
     ]
   },
   {
     "text": "Le vrai nom de Bob Dylan est ____ Zimmerman.",
     "answer": "robert",
     "source": null,
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "john",
-      "ted"
+      "ted",
+      "adolphe",
+      "al"
     ]
   },
   {
     "text": "L'oiseau de Twitter a vraiment un nom: ____.",
     "answer": "larry",
     "source": null,
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "john",
-      "ted"
+      "ted",
+      "robert",
+      "edouard"
     ]
   },
   {
     "text": "La chaise éléctrique a été inventée par un ____ professionel, appellé Alfred Southwick.",
     "answer": "dentiste",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "jongleur",
       "golfeur",
+      "cycliste",
       "skieur"
     ]
   },
@@ -51,8 +63,14 @@
     "text": "Jacobite Cruises a souscrit une assurance inhabituelle pour la protéger des dommages causés par ____.",
     "answer": "Le monstre du loch ness",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "le loch ness",
+      "loch ness"
+    ],
+    "traps":[
       "les chutes de pierre",
+      "la foudre",
+      "les tsunamis",
       "les ours"
     ]
   },
@@ -60,8 +78,15 @@
     "text": "Le premier élément répertorié sur eBay était un ____",
     "answer": "pointeur laser",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "laser",
+      "pointeur lazer",
+      "lazer"
+    ],
+    "traps":[
       "lave-vaisselle",
+      "disque vinyl",
+      "lecteur disquette",
       "vieux téléphone"
     ]
   },
@@ -69,17 +94,28 @@
     "text": "Assez curieusement, les globes oculaires d'Albert Einstein peuvent être trouvés dans un ____ à New York.",
     "answer": "coffre-fort",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
-      "Bar",
-      "Musée"
+    "alternateSpellings": [
+      "coffre"
+    ],
+    "traps":[
+      "bar",
+      "hotel",
+      "grenier",
+      "musée"
     ]
   },
   {
     "text": "En 2013, un homme riche du Michigan a acheté la maison à côté de son ex-épouse et érigé une statue de bronze géante d'un ____.",
     "answer": "majeur",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
-      "penis",
+    "alternateSpellings": [
+      "finger",
+      "doigt d'honneur"
+    ],
+    "traps":[
+      "pénis",
+      "éléphant",
+      "savon",
       "tas de merde"
     ]
   },
@@ -87,8 +123,11 @@
     "text": "La compagnie de pêche E21 fait une canne à pêche très particulière composée à 70% de ____.",
     "answer": "carotte",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "terre",
+      "patate",
+      "cire",
       "d'argile"
     ]
   },
@@ -96,8 +135,17 @@
     "text": "Il y a un musée de la nouveauté à Arlington, au Massachusetts, qui ne recueille que de la nourriture qui a été ____.",
     "answer": "brûlée",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "cramée",
+      "cramer",
+      "bruler",
+      "brulée",
+      "brulé"
+    ],
+    "traps":[
       "machée",
+      "lavée",
+      "piétinée",
       "régurgitée"
     ]
   },
@@ -105,7 +153,12 @@
     "text": "Ben et Jerry ont seulement commencé à faire de la crème glacée parce que c'était trop cher de faire ____.",
     "answer": "des bagels",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "bagels"
+    ],
+    "traps":[
+      "des cocktails",
+      "des frites",
       "des hamburgers",
       "la vaisselle"
     ]
@@ -114,16 +167,27 @@
     "text": "Tashirojima est une île au large du Japon qui est complètement envahie par ____.",
     "answer": "des chats",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "des chattes",
+      "des chat",
+      "des minou",
+      "des minoux"
+    ],
+    "traps":[
       "la végétation",
+      "des renards",
+      "des oiseaux",
       "du brouillard"
     ]
   },{
     "text": "Alors qu'il était président des États-Unis, John Adams avait un chien nommé Juno et un chien nommé ____.",
     "answer": "satan",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "juni",
+      "daemon",
+      "jesus",
       "jonu"
     ]
   },
@@ -131,8 +195,13 @@
     "text": "En 2007, Golden Laurel Entertainment a publié un jeu de société intitulé Kill the ____.",
     "answer": "hippies",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "hippy",
+      "hippie"
+    ],
+    "traps":[
       "cats",
+      "cows",
       "dogs",
       "bunnies"
     ]
@@ -141,7 +210,12 @@
     "text": "En 2012, un homme de 26 ans originaire de Londres s'est donné pour mission de lécher toutes les ____ au Royaume-Uni.",
     "answer": "cathédrales",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "églises"
+    ],
+    "traps":[
+      "maisons",
+      "écoles",
       "bornes incendie",
       "postes"
     ]
@@ -150,8 +224,11 @@
     "text": "Dans le but de promouvoir la \"slow TV\", la Norvège avait en 2013 un bloc de programmation de 12 heures consacré au ____.",
     "answer": "tricot",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "yoga",
+      "thé",
+      "jeu",
       "enfants"
     ]
   },
@@ -159,7 +236,10 @@
     "text": "Un jeu télévisé pakistanais de 2013 a provoqué une controverse lorsque leur grand prix était un ____.",
     "answer": "bébé",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
+      "serpent",
+      "tank",
       "fusil d'assault",
       "missile sol-air"
     ]
@@ -168,7 +248,12 @@
     "text": "Depuis 2000, un couple dans le Queens, à New York, vit sans frais dans ____ en échange de sa prise en charge.",
     "answer": "un cimetière",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "un cimetière"
+    ],
+    "traps":[
+      "une tombe",
+      "un restaurant",
       "une décharge",
       "une ferme"
     ]
@@ -177,16 +262,25 @@
     "text": "En 2013, un détenu suédois de 51 ans a été libéré de prison un jour avant sa libération prévue afin qu'il puisse aller voir ____.",
     "answer": "un dentiste",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "le dentiste",
+      "son dentiste"
+    ],
+    "traps":[
+      "un match de foot",
+      "un film",
       "la reine des neiges",
       "sa femme"
     ]
   },
   {
-    "text": "Chaque année, les habitants d'Ivrea, en Italie, reconstituent une bataille historique de leur région, et au lieu de répliques d'armes, ils utilisent  des ____.",
+    "text": "Chaque année, les habitants d'Ivrea, en Italie, reconstituent une bataille historique de leur région, et au lieu de répliques d'armes, ils utilisent des ____.",
     "answer": "oranges",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
+      "papiers",
+      "bout de bois",
       "fleurs",
       "bâtons"
     ]
@@ -195,7 +289,12 @@
     "text": "Possédant 55 000 d'entre eux, Ted Turner possède la plus grande collection privée au monde de ____.",
     "answer": "bison",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "bisons"
+    ],
+    "traps":[
+      "vache",
+      "voiture",
       "giraffe",
       "buffle tacheté"
     ]
@@ -204,7 +303,13 @@
     "text": "Une étude publiée dans la revue Anthrozoo a rapporté que les vaches produisent 5% de lait de plus quand on leur donne ____.",
     "answer": "un nom",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "un surnom",
+      "un petit nom"
+    ],
+    "traps":[
+      "des chewing gum",
+      "un cigarette",
       "le biberon",
       "des bonbons"
     ]
@@ -213,16 +318,24 @@
     "text": "Monroe Isadore, un homme de 107 ans de l'Arkansas, est décédé au cours d'une ____.",
     "answer": "fusillade",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
+      "prise d'hotage",
+      "baignade",
       "tempête de neige",
       "course de bateau"
     ]
   },
   {
     "text": "Le 12 novembre 1970, George Thornton, un ingénieur des routes de l'Oregon, a eu le travail inhabituel de faire exploser ____.",
-    "answer": "une baleine échouée",
+    "answer": "une baleine morte",
     "source": "http://gameguidecentral.com/fibbage-answers/",
-    "traps": [
+    "alternateSpellings": [
+      "une baleine"
+    ],
+    "traps":[
+      "un tunnel",
+      "un pont",
       "une ferme",
       "un barrage de castor"
     ]
@@ -231,7 +344,14 @@
     "text": "En 2013, Dell a émis un rappel après que les clients se sont plaints que leurs ordinateurs portables sentaient comme ____.",
     "answer": "de l'urine de chat",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "l'urine de chat",
+      "de la pisse de chat",
+      "la pisse de chat"
+    ],
+    "traps":[
+      "de la merde",
+      "des excrements",
       "des poissons morts",
       "des pets"
     ]
@@ -240,7 +360,12 @@
     "text": "Selon une étude de l'Université de Jena, les personnes qui ont les visages les plus mémorables sont les personnes ____.",
     "answer": "moches",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "laides"
+    ],
+    "traps":[
+      "maigres",
+      "rousses",
       "obèses",
       "mortes"
     ]
@@ -249,8 +374,11 @@
     "text": "Le festival sportif de Kila Raipur, qui a lieu tous les ans au Pendjab, en Inde, a de nombreux événements étranges et dangereux, dont un où les participants se trouvent sur le sol et se font ____.",
     "answer": "écraser par un tracteur",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "enterrer vivant",
+      "tabasser",
+      "embrasser",
       "démembrer"
     ]
   },
@@ -258,7 +386,10 @@
     "text": "Après une réaction allergique aux stéroïdes utilisés dans le traitement de l'asthme, une femme de 28 ans a commencé à développer ____ sur sa tête plutôt que des cheveux.",
     "answer": "des ongles",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
+      "des oreilles",
+      "du cartilage",
       "des fleurs",
       "des dents"
     ]
@@ -267,7 +398,10 @@
     "text": "Dans une interview en 1999 avec US Weekly, l'actrice Lucy Liu a révélé qu'elle avait déjà eu une relation sexuelle avec ____.",
     "answer": "un fantôme",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "un revenant"
+    ],
+    "traps":[
       "un mort",
       "un lapin",
       "un fruit",
@@ -278,7 +412,11 @@
     "text": "La ville d'Olney (Illinois) organise un événement annuel pour ____ les écureuils.",
     "answer": "compter",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "dénombrer",
+      "denombrer"
+    ],
+    "traps":[
       "embrasser",
       "raser",
       "dresser",
@@ -289,7 +427,8 @@
     "text": "Walter Arnold a reçu le premier ticket pour excès de vitesse au monde en 1896 pour avoir roulé  à ____ km/h.",
     "answer": "12,8",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "161",
       "15",
       "23,4",
@@ -300,7 +439,8 @@
     "text": "Edgar Valdez Villarreal, un leader du cartel de la drogue mexicain notoire, avait le surnom pas si effrayant \"La ____\".",
     "answer": "barbie",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "bamba",
       "chatte",
       "fleur",
@@ -311,7 +451,11 @@
     "text": "Pour protester contre l'état policier en Biélorussie, un groupe suédois a largué des centaines de ____ d'un avion.",
     "answer": "nounours",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "peluches",
+      "peluche"
+    ],
+    "traps":[
       "pistolets",
       "poulets",
       "roses",
@@ -322,7 +466,8 @@
     "text": "L'Anatidaephobie est la peur que quelque part dans le monde un ____ vous regarde.",
     "answer": "canard",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "roi",
       "poisson",
       "mime",
@@ -333,7 +478,8 @@
     "text": "Les sécrétions anales d'un castor peuvent être utilisées comme un substitut de ____ dans certains aliments.",
     "answer": "vanille",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "lait",
       "sel",
       "viande",
@@ -344,7 +490,12 @@
     "text": "Selon une étude de Logitech, 49% des télécommandes perdues sont trouvées dans le canapé, tandis que 4% se trouvent dans ____.",
     "answer": "le frigo",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "le frigidaire",
+      "le refrigirateur",
+      "le refrigerateur"
+    ],
+    "traps":[
       "la voiture",
       "le four",
       "les toilettes",
@@ -355,7 +506,8 @@
     "text": "En 2010, des agents des douanes à la frontière entre la Norvège et la Suède ont intercepté un camion qui tentait de faire passer 28 tonnes ____ en provenance de Chine.",
     "answer": "d'ail",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "de sandale",
       "d'oreiller",
       "de bougie",
@@ -366,7 +518,8 @@
     "text": "En 2006, le musée de cire Madame Tussaud à New York a présenté sa première cire ____.",
     "answer": "bébé",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "dinosaure",
       "chien",
       "voiture",
@@ -377,7 +530,8 @@
     "text": "Sur son propre site web, le magicien David Blaine a écrit: \"L'acte le plus courageux qu'un homme puisse faire est de ____\".",
     "answer": "pleurer",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "dancer",
       "pardonner",
       "chanter",
@@ -388,7 +542,10 @@
     "text": "Advanced Comfort Technology fabrique des lits d'eau pour ____.",
     "answer": "vaches",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "vache"
+    ],
+    "traps":[
       "bébés",
       "chats",
       "astronautes",
@@ -399,7 +556,12 @@
     "text": "L'île de las Munecas au Mexique est une attraction connue pour avoir des centaines de ____ suspendues dans ses arbres.",
     "answer": "poupés",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "poupées",
+      "poupé",
+      "poupée"
+    ],
+    "traps":[
       "chaussures",
       "chapeaux",
       "cornichons",
@@ -410,7 +572,10 @@
     "text": "El Colacho est un festival espagnol où les gens s'habillent comme le diable et sautent par dessus des ____.",
     "answer": "bébés",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "bébé"
+    ],
+    "traps":[
       "vieux",
       "serpents",
       "piscines",
@@ -421,7 +586,8 @@
     "text": "Une femme britannique a été arrêtée pour avoir détourné un ferry britannique et crié: \"____!\"",
     "answer": "je suis Jack Sparrow",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "je suis un monstre",
       "vive la france",
       "oups désolé",
@@ -432,7 +598,13 @@
     "text": "Afin de soulager le stress de ses étudiants, l'Université Dalhousie a créé en 2012 une salle ____.",
     "answer": "à chiots",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "à chiot",
+      "à chiens",
+      "à chien",
+      "à petits chiens"
+    ],
+    "traps":[
       "du silence",
       "de peinture",
       "à banjo",
@@ -443,7 +615,10 @@
     "text": "Cheap Chic Weddings est un concours annuel dans lequel les participants font des robes de mariée en ____.",
     "answer": "papier toilette",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "papier de toilette"
+    ],
+    "traps":[
       "cire",
       "sac plastique",
       "plume",
@@ -454,7 +629,8 @@
     "text": "À 2 h 45 un jour de juin 2013, un homme d'Orlando, en Floride, a été arrêté pour avoir marché jusqu'à un policier et avoir donné des coups de poing à son ____.",
     "answer": "cheval",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [],
+    "traps":[
       "partenaire",
       "fils",
       "visage",
@@ -465,7 +641,12 @@
     "text": "Au cours des 35 dernières années, l'artiste Scott Weaver a construit une réplique de la ville de San Francisco en utilisant plus de 100 000 ____.",
     "answer": "cure-dents",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "cure-dent",
+      "cure dents",
+      "cure dent"
+    ],
+    "traps":[
       "cheveux",
       "flechettes",
       "pièges à souris",
@@ -476,7 +657,11 @@
     "text": "Le 24 octobre 2013, un homme de Columbus, en Géorgie, a couru dans sa maison en flammes afin de sauver sa ____.",
     "answer": "bière",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "biere",
+      "bouteille de biere"
+    ],
+    "traps":[
       "femme",
       "collection de VHS",
       "lampe à lave",
@@ -487,7 +672,13 @@
     "text": "Bien que très peu conventionnel, le fermier William von Schneidau nourrit ses cochons avec ____.",
     "answer": "de la marijuana",
     "source": "https://github.com/joebandenburg/fibbage-questions/blob/master/questions.json",
-    "traps": [
+    "alternateSpellings": [
+      "de la weed",
+      "de la mariuana",
+      "de la marjuana",
+      "du pot"
+    ],
+    "traps":[
       "du jambon",
       "de la cocaïne",
       "du thé",
