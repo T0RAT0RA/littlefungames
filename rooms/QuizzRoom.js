@@ -214,7 +214,6 @@ module.exports = class QuizzRoom extends Room {
     const question = this.getNextQuestion();
     this.questionsAsked.push(question);
     this.state.question = {...question};
-    this.state.question.answer = null;
 
     const callback = () => {
       this.fsm.vote();

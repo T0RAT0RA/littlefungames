@@ -38,11 +38,11 @@
             <br>
             <button @click="start"
                     v-if="!player.ready"
-                    class="btn btn-secondary btn-lg">{{ $t('I\'m ready') }}
+                    class="btn btn-secondary btn-lg">{{ $t('Start the game') }}
             </button>
             <button @click="pause"
                     v-if="player.ready"
-                    class="btn btn-warning btn-lg">{{ $t('I\'m not ready!') }}
+                    class="btn btn-warning btn-lg">{{ $t('Wait!') }}
             </button>
           </div>
           <div v-else-if="gameState === 'question'">
@@ -52,6 +52,7 @@
                    @keyup.enter="answer"
                    style="margin-bottom: 10px;"
             />
+            <div class="answer-warning badge badge-warning" v-if="answerWarning">{{answerWarning}}</div>
             <button @click="answer" class="btn btn-secondary">
               {{ $t('Send') }}
             </button>
@@ -98,12 +99,12 @@
     margin-bottom: 15px;
   }
   .question {
-    font-size: 40px;
+    font-size: 30px;
     line-height: normal;
     margin: 10px 0;
   }
   .remote .btn {
-    font-size: 70px;
+    font-size: 50px;
     height: inherit;
   }
   .remote {
@@ -114,6 +115,10 @@
   }
   input.username {
     margin: 10px 0;
+  }
+  .answer-warning {
+    font-size: 30px;
+    display: block;
   }
 </style>
 
@@ -131,6 +136,7 @@
         playerAnswerSent: null,
         playerAnswer: null,
         choosenAnswer: null,
+        answerWarning: null,
       }
     },
     created: function () {
@@ -205,9 +211,25 @@
       },
       answer: function () {
         const answer = this.$refs.answerInput;
+
+        this.answerWarning = null;
+
         if (!answer.value) {
           return;
         }
+
+        if (answer.value.toUpperCase() === this.serverState.question.answer.toUpperCase()
+          || (
+               this.serverState.question.alternateSpellings
+            && this.serverState.question.alternateSpellings.filter(
+                      a => a.toUpperCase() === answer.value.toUpperCase()
+               ).length
+          )
+        ) {
+          this.notifyCorrectAnswer();
+          return;
+        }
+
         this.serverRoom.send({answer: answer.value});
         this.playerAnswerSent = answer.value;
         answer.value = null;
@@ -223,6 +245,9 @@
       next: function () {
         this.serverRoom.send({next: true});
       },
+      notifyCorrectAnswer() {
+        this.answerWarning  = this.$t('This is the correct answer, change it!')
+      },
     }
   }
 </script>
@@ -233,14 +258,15 @@
     "Join": "Rejoindre",
     "Code": "Code",
     "Name": "Nom",
-    "I'm ready": "Je suis prêt",
-    "I'm not ready!": "Je ne suis pas prêt!",
+    "Start the game": "Démarrer la partie",
+    "Wait!": "Attendez!",
     "Game is paused.": "La partie est en pause.",
     "Your answer": "Votre réponse:",
     "Send": "Envoyer",
     "Choose an answer:": "Choisissez une réponse",
     "Continue playing": "Continuer à jouer",
-    "This game does not exist.": "Cette partie n'existe pas."
+    "This game does not exist.": "Cette partie n'existe pas.",
+    "This is the correct answer, change it!": "C'est la bonne réponse, change la!"
   }
 }
 </i18n>
