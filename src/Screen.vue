@@ -303,7 +303,12 @@
       if ('speechSynthesis' in window) {
         speech = new SpeechSynthesisUtterance();
         speech.volume = 0.6;
-        speech.lang = 'fr-FR';
+        const frenchVoices = speechSynthesis.getVoices().filter((v) => v.lang.includes('fr-FR')) || [];
+        if (frenchVoices.length) {
+          speech.voice = frenchVoices[0];
+        } else {
+          speech.lang = 'fr-FR';
+        }
       }
 
       const timer = new Audio('/assets/timer.mp3');
