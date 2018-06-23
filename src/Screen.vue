@@ -129,6 +129,9 @@
                                 :style="playerColorStyle(player)"
                             >
                               {{player.name}}
+                              <span v-if="player.points" class="points badge badge-dark">
+                                <template v-if="player.points > 0">+</template>{{player.points}}
+                              </span>
                             </span><br>
                             <span v-if="Object.keys(result.foolers).length === 1">
                               vous a eu!
@@ -144,6 +147,9 @@
                           <div class="player badge badge-info"
                               :style="playerColorStyle(player)">
                             {{player.name}}
+                            <span v-if="player.points" class="points badge badge-dark">
+                              <template v-if="player.points > 0">+</template>{{player.points}}
+                            </span>
                           </div>
                         </template>
                       </div>
@@ -224,11 +230,11 @@
   .result .label {
     font-size: 40px;
   }
-  
+
   .result .player, .result .fooler {
+    position: relative;
     font-size: 30px;
   }
-  
   .code {
     padding: 0 10px;
     color: #FFF;
@@ -249,8 +255,7 @@
     float: left;
     margin-right: 10px;
   }
-  
-  
+
   .result .vote {
     display: inline-block;
   }
@@ -270,6 +275,15 @@
     position: relative;
     top: -20px;
     margin: 5px 10px;
+  }
+
+  .result .player .points,
+  .result .fooler .points {
+    position: absolute;
+    top: -20px;
+    transform: scale(0);
+    right: -30px;
+    z-index: 500;
   }
 </style>
 
@@ -509,11 +523,38 @@
                       this.sounds.wrong.play();
                       label.classList.add("badge-danger");
                     }
-                    
-                    setTimeout(() => {
-                      vote.style.display = 'none';
-                      resolve();
-                    }, 4000)
+
+                    const scoreInstructions = [{
+                      track: 'delay',
+                      duration: 1500,
+                    }];
+                    const points = Array.from(vote.querySelectorAll('.points'));
+                    const pointsStylers = [];
+                    points.forEach((point, p) => {
+                      pointsStylers.push(styler(point));
+                      scoreInstructions.push(
+                        {
+                          track: `points-${p}`,
+                          from: { scale: 0, rotate: 0 },
+                          to: { scale: 1, rotate: 27 },
+                          duration: 100,
+                        }
+                      );
+                    });
+
+                    timeline(scoreInstructions).start({
+                      update: (w) => {
+                        for(const l in pointsStylers) {
+                          pointsStylers[l].set(w[`points-${l}`]);
+                        }
+                      },
+                      complete: () => {
+                        setTimeout(() => {
+                          vote.style.display = 'none';
+                          resolve();
+                        }, 4000)
+                      }
+                    });
                   }
                 });
               });
