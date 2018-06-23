@@ -75,10 +75,6 @@
             </div>
             <div class="card-body">
               <div v-if="gameState === 'lobby'">
-                <!--<img class="card-img-top" src="//placehold.it/186x80" alt="Card image cap">-->
-                <h5 class="card-title">
-                  {{ $t('Lobby') }}
-                </h5>
                 <p class="card-text">
                   {{ $t('Click start on your device to start the game.') }}<br>
                   <template v-if="qrCode">
@@ -371,7 +367,7 @@
         this.$router.push({ name: 'play', params: { room: this.currentRoomCode } });
       },
       'serverState.gameTimer'() {
-        if ((this.gameState === 'question' || this.gameState === 'vote') && this.serverState.gameTimer <= 2) {
+        if ((this.gameState === 'question' || this.gameState === 'vote') && this.serverState.gameTimer <= 1) {
           this.sounds.timer.currentTime = 28.515;
         }
         if ((this.gameState === 'question') && this.serverState.gameTimer !== null) {
@@ -546,10 +542,9 @@
     "Players:": "Joueurs:",
     "Game is paused.": "La partie est en pause.",
     "A player has been lost! The game will resume once they're back.": "Un joueur a été perdu! La partie reprendra une fois tout le monde revenue.",
-    "Click \"Start the game\" on your device to start the game.": "Cliquez \"Démarrer la partie\" sur votre appareil pour commencer la partie.",
+    "Click start on your device to start the game.": "Cliquez \"Démarrer la partie\" sur votre appareil pour commencer la partie.",
     "Scan this image to join the game:": "Scannez cette image pour rejoindre la partie.",
     "Or go to:": "Ou allez à cette adresse:",
-    "Lobby": "Lobby",
     "Choose one of these answer:": "Choisissez une de ces réponses:",
     "Vote results": "Résultats des votes",
     "Final score:": "Score final:",
