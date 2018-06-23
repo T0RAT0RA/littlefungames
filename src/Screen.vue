@@ -33,8 +33,8 @@
               </template>
             </div>
             <ul class="list-group list-group-flush">
-              <li v-if="playersByScore"
-                  v-for="player in playersByScore"
+              <li v-if="players"
+                  v-for="player in players"
                   class="list-group-item d-flex justify-content-between align-items-center"
                   :class="{
                     'list-group-item-warning': player.disconnected
@@ -51,7 +51,7 @@
                     <i class="fas fa-exclamation-triangle"></i>
                   </template>
                   <span class="badge badge-primary"
-                        v-if="gameState !== 'lobby'">
+                        v-if="gameState !== 'lobby' && gameState !== 'results'">
                     {{ player.score }}
                   </span>
                 </span>
@@ -161,6 +161,9 @@
                         v-for="player in playersByScore"
                         class="list-group-item d-flex justify-content-between align-items-center">
                       <span>
+                        <span class="player-color"
+                          :style="{ backgroundColor: player.color }"
+                        ></span>
                         {{ player.name }}
                       </span>
                       <span>
@@ -331,7 +334,6 @@
           wrong,
         },
         speech,
-        players: {},
       }
     },
     created: function () {
@@ -347,11 +349,14 @@
       progression: function() {
         return Math.round(this.serverState.gameTimer / this.serverState.gameTimerMax * 100);
       },
+      players: function() {
+        return this.serverState.players || [];
+      },
       playersByScore: function() {
-        if (!this.serverState.players) {
+        if (!this.players) {
           return [];
         }
-        let players = Object.values(this.serverState.players);
+        let players = Object.values(this.players);
         players.sort((a, b) => b.score - a.score);
         return players;
       },
