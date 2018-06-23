@@ -80,7 +80,7 @@
           </div>
           <div v-else-if="gameState === 'end'">
             <button @click="restart"
-                    v-if="!player.ready"
+                    v-if="playerCanRestart && !player.ready"
                     class="btn btn-secondary btn-lg">
                 {{ $t('Continue playing') }}
             </button>
@@ -137,6 +137,7 @@
         playerAnswer: null,
         choosenAnswer: null,
         answerWarning: null,
+        playerCanRestart: false,
       }
     },
     created: function () {
@@ -180,6 +181,14 @@
       },
     },
     watch: {
+      gameState() {
+        if (this.gameState === 'end') {
+          this.playerCanRestart = false;
+          setTimeout(() => {
+            this.playerCanRestart = true;
+          }, 4000);
+        }
+      },
       currentRoomCode: function() {
         this.$router.push({ name: 'remote', params: { room: this.currentRoomCode } });
       }

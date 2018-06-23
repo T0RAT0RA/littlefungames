@@ -417,6 +417,13 @@ module.exports = class QuizzRoom extends Room {
   onMessage (client, data) {
     this.state.logs.push(`(${ client.id }) ${ JSON.stringify(data) }`);
 
+
+    if (data.startNewGame) {
+      this.fsm.newGame();
+      this.markPlayerIsReady(client.id);
+      data.startGame = true;
+    }
+
     if (data.startGame) {
       if (!this.timer.start) {
         const callback = () => {
@@ -444,17 +451,6 @@ module.exports = class QuizzRoom extends Room {
 
     if (data.vote || data.vote === null) {
       this.onPlayerVote(client, data);
-    }
-
-    if (data.startNewGame) {
-      this.fsm.newGame();
-      this.markPlayerIsReady(client.id);
-    }
-
-    if (data.newName) {
-      if(!this.state.gameStarted) {
-        this.state.players[client.id].name = data.newName;
-      }
     }
 
     if (data.startTimer) {
