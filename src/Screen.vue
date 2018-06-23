@@ -291,8 +291,7 @@
   import QRCode from "qrcode";
   import Color from 'color';
   import random from 'random';
-  import { tween, styler, timeline } from 'popmotion';
-  import Velocity from "velocity-animate";
+  import { styler, timeline } from 'popmotion';
   import server from "@/mixins/server.js";
 
   export default {
