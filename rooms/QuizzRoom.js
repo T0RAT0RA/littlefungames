@@ -219,13 +219,8 @@ module.exports = class QuizzRoom extends Room {
     const callback = () => {
       this.fsm.vote();
     };
-    setTimeout(() => {
-        this.state.gameTimer = QUESTION_TIME;
-        this.state.gameTimerMax = QUESTION_TIME;
-        this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
-      },
-      QUESTION_TIME_DELAY * 1000
-    );
+
+    this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
   }
 
   onEnterVote () {
@@ -459,6 +454,13 @@ module.exports = class QuizzRoom extends Room {
     if (data.newName) {
       if(!this.state.gameStarted) {
         this.state.players[client.id].name = data.newName;
+      }
+    }
+
+    if (data.startTimer) {
+      if (this.state.state === 'question' && this.state.gameTimer === null) {
+        this.state.gameTimer = QUESTION_TIME;
+        this.state.gameTimerMax = QUESTION_TIME;
       }
     }
 

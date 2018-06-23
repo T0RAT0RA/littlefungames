@@ -374,6 +374,11 @@
         if ((this.gameState === 'question' || this.gameState === 'vote') && this.serverState.gameTimer <= 2) {
           this.sounds.timer.currentTime = 28.515;
         }
+        if ((this.gameState === 'question') && this.serverState.gameTimer !== null) {
+          if (this.sounds.timer.paused) {
+            this.sounds.timer.play();
+          }
+        }
       },
       gameState() {
         this.clearSounds();
@@ -386,10 +391,12 @@
         }
 
         if (this.gameState === 'question') {
-          this.sounds.timer.play();
           // Read the question out loud
           if (this.speech) {
             this.speech.text = this.serverState.question.text.replace('____', '');
+            this.speech.onend = () => {
+              this.serverRoom.send({startTimer: true});
+            };
             speechSynthesis.speak(this.speech);
           }
         }
