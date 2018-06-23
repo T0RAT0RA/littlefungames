@@ -170,7 +170,6 @@
         const choices = this.serverState.answersChoice.filter((a) => {
           return !this.playerAnswerSent || a !== this.playerAnswerSent.toUpperCase();
         });
-        console.log(this.playerAnswerSent.toUpperCase(), choices);
         return choices;
       },
       headerStyle() {
