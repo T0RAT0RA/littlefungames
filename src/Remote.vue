@@ -179,6 +179,17 @@
         }, 0)
       },
       gameState() {
+        if (this.gameState === 'lobby') {
+          //Fixed an issue where $refs.name is not yet rendered
+          setTimeout(() => {
+            this.$refs.name.value = name || localStorage.getItem('name') || null;
+          }, 0)
+        }
+        if (this.gameState === 'question') {
+          setTimeout(() => {
+            this.$refs.answerInput.value = null;
+          }, 0)
+        }
         if (this.gameState === 'end') {
           this.playerCanRestart = false;
           setTimeout(() => {
