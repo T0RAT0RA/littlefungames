@@ -347,10 +347,14 @@ module.exports = class QuizzRoom extends Room {
                 continue;
               }
               fooler.score += points;
-              this.state.results[vote].foolers[fooler.name] = {
-                points: points,
-                ...fooler,
-              };
+
+              if (!this.state.results[vote].foolers[fooler.name]) {
+                this.state.results[vote].foolers[fooler.name] = {
+                  points: 0,
+                  ...fooler,
+                };
+              }
+              this.state.results[vote].foolers[fooler.name].points += points;
             }
           }
         }
