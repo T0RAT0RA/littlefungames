@@ -453,6 +453,12 @@ module.exports = class QuizzRoom extends Room {
       this.onPlayerVote(client, data);
     }
 
+    if (data.newName) {
+      if(!this.state.gameStarted) {
+        this.state.players[client.id].name = data.newName;
+      }
+    }
+
     if (data.startTimer) {
       if (this.state.state === 'question' && this.state.gameTimer === null) {
         this.state.gameTimer = QUESTION_TIME;

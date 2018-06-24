@@ -34,7 +34,9 @@
       <div class="row">
         <div class="col game">
           <div v-if="gameState === 'lobby'">
-            <input v-model="name" size="12" class="username"/>
+            <input ref="name" size="12" class="username"
+                   @keyup="updateName"
+                   @change="updateName"/>
             <br>
             <button @click="start"
                     v-if="!player.ready"
@@ -156,17 +158,6 @@
       playerName: function () {
         return this.player.name;
       },
-      name: {
-        get: function () {
-          return this.playerName || localStorage.getItem('name') || null;
-        },
-        set: function (name) {
-          localStorage.setItem('name', name);
-          if (name){
-            this.serverRoom.send({newName: name});
-          }
-        }
-      },
       answersChoice() {
         const choices = this.serverState.answersChoice.filter((a) => {
           return !this.playerAnswerSent || a !== this.playerAnswerSent.toUpperCase();
@@ -181,6 +172,12 @@
       },
     },
     watch: {
+      playerName(name) {
+        //Fixed an issue where $refs.name is not yet rendered
+        setTimeout(() => {
+          this.$refs.name.value = name || localStorage.getItem('name') || null;
+        }, 0)
+      },
       gameState() {
         if (this.gameState === 'end') {
           this.playerCanRestart = false;
@@ -196,8 +193,15 @@
     methods: {
       joinGame() {
         this.join('quizz', {
-          name: this.name,
+          name: localStorage.getItem('name') || null,
         }).then(this.onGameJoin);
+      },
+      updateName() {
+        const name = this.$refs.name.value;
+        localStorage.setItem('name', name);
+        if (name){
+          this.serverRoom.send({newName: name});
+        }
       },
       onGameJoin(serverRoom) {
         serverRoom.listen("gameTimer", (change) => {
