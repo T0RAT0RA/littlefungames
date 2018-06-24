@@ -33,8 +33,8 @@
               </template>
             </div>
             <ul class="list-group list-group-flush">
-              <li v-if="players"
-                  v-for="player in players"
+              <li v-if="playersByScore"
+                  v-for="player in playersByScore"
                   class="list-group-item d-flex justify-content-between align-items-center"
                   :class="{
                     'list-group-item-warning': player.disconnected
