@@ -28,7 +28,6 @@ const QUESTIONS = require('./questions.fr.json');
 //Times in seconds
 const LOBBY_TIME = 5;
 const QUESTION_TIME = 30;
-const QUESTION_TIME_DELAY = 6;
 const VOTE_TIME = 30;
 const RESULT_TIME = null; //null means infinite
 const MAX_QUESTIONS = process.env.QUESTIONS || 5;

@@ -82,7 +82,7 @@
           </div>
           <div v-else-if="gameState === 'end'">
             <button @click="restart"
-                    v-if="playerCanRestart && !player.ready"
+                    v-if="!player.ready"
                     class="btn btn-secondary btn-lg">
                 {{ $t('Continue playing') }}
             </button>
@@ -139,7 +139,6 @@
         playerAnswer: null,
         choosenAnswer: null,
         answerWarning: null,
-        playerCanRestart: false,
       }
     },
     created: function () {
@@ -183,18 +182,15 @@
           //Fixed an issue where $refs.name is not yet rendered
           setTimeout(() => {
             this.$refs.name.value = name || localStorage.getItem('name') || null;
-          }, 0)
+          }, 10)
         }
         if (this.gameState === 'question') {
           setTimeout(() => {
             this.$refs.answerInput.value = null;
-          }, 0)
+          }, 10)
         }
-        if (this.gameState === 'end') {
-          this.playerCanRestart = false;
-          setTimeout(() => {
-            this.playerCanRestart = true;
-          }, 4000);
+        if (this.gameState === 'vote') {
+          this.choosenAnswer = null;
         }
       },
       currentRoomCode: function() {
