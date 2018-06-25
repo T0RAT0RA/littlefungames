@@ -379,7 +379,7 @@
         return players;
       },
       gameURL: function() {
-        return `${window.location.protocol}//${window.location.host}/remote/${this.currentRoomCode}`;
+        return `${window.location.protocol}//${window.location.host}/r/${this.currentRoomCode}`;
       },
     },
     watch: {

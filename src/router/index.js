@@ -21,7 +21,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/remote/:room?',
+      path: '/r/:room?',
       name: 'remote',
       component: Remote,
       props: true
