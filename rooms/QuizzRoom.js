@@ -40,6 +40,7 @@ module.exports = class QuizzRoom extends Room {
     this.maxClients = MAX_PLAYERS + 1; //+1 screen
     this.availableColors = _.shuffle(COLORS);
     this.availableSounds = _.shuffle(SOUNDS);
+    this.availableQuestions = []; // Init in onEnterLobby
 
     //This is the state sent to connected clients.
     this.setState({
@@ -87,7 +88,10 @@ module.exports = class QuizzRoom extends Room {
   }
 
   onEnterLobby() {
-    this.questions = _.sampleSize(QUESTIONS, this.state.maxQuestions);
+    if (!this.availableQuestions.length){
+      this.availableQuestions = _.shuffle(QUESTIONS)
+    }
+    this.questions = this.availableQuestions.splice(0, this.state.maxQuestions);
     this.state.questionsAsked = 0;
     this.questionsAsked = [];
 
