@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const fs = require('fs');
 const randomstring = require('randomstring');
-const Room = require('colyseus').Room;
-const Clock = require('colyseus').Clock;
+const { Room } = require('colyseus');
 const StateMachine = require('javascript-state-machine');
 
 const COLORS = [
@@ -19,29 +18,29 @@ const COLORS = [
 ];
 
 const SOUNDS = [];
-fs.readdirSync('./assets/player').forEach(file => {
+fs.readdirSync('./assets/player').forEach((file) => {
   SOUNDS.push(file);
 });
 
 const QUESTIONS = require('./questions.fr.json');
 
-//Times in seconds
+// Times in seconds
 const LOBBY_TIME = 5;
 const QUESTION_TIME = 30;
 const VOTE_TIME = 30;
-const RESULT_TIME = null; //null means infinite
+const RESULT_TIME = null; // null means infinite
 const MAX_QUESTIONS = process.env.QUESTIONS || 5;
 const MAX_PLAYERS = 10;
 
 module.exports = class QuizzRoom extends Room {
-  onInit (options) {
+  onInit(options) {
     this.code = null;
-    this.maxClients = MAX_PLAYERS + 1; //+1 screen
+    this.maxClients = MAX_PLAYERS + 1; // +1 screen
     this.availableColors = _.shuffle(COLORS);
     this.availableSounds = _.shuffle(SOUNDS);
     this.availableQuestions = []; // Init in onEnterLobby
 
-    //This is the state sent to connected clients.
+    // This is the state sent to connected clients.
     this.setState({
       code: this.code,
       gameTimer: LOBBY_TIME,
@@ -57,38 +56,39 @@ module.exports = class QuizzRoom extends Room {
       state: null,
       questionsAsked: 0,
       maxQuestions: MAX_QUESTIONS,
-      logs: []
+      logs: [],
     });
 
     this.fsm = new StateMachine({
       init: 'lobby',
       transitions: [
-        { name: 'start',    from: 'lobby',    to: 'question'  },
-        { name: 'vote',     from: 'question', to: 'vote'      },
-        { name: 'results',  from: 'vote',     to: 'results'   },
-        { name: 'ask',      from: 'results',  to: () => {
-            return this.questionsAsked.length < this.questions.length ? 'question' : 'end';
-          }},
-        { name: 'end',      from: 'answer',   to: 'results'   },
-        { name: 'newGame',  from: 'end',      to: 'lobby'     },
+        { name: 'start', from: 'lobby', to: 'question' },
+        { name: 'vote', from: 'question', to: 'vote' },
+        { name: 'results', from: 'vote', to: 'results' },
+        {
+          name: 'ask',
+          from: 'results',
+          to: () => (this.questionsAsked.length < this.questions.length ? 'question' : 'end'),
+        },
+        { name: 'end', from: 'answer', to: 'results' },
+        { name: 'newGame', from: 'end', to: 'lobby' },
       ],
       methods: {
-        onBeforeTransition: this.onBeforeTransition.bind(this),
         onEnterState: this.onEnterState.bind(this),
         onEnterQuestion: this.onEnterQuestion.bind(this),
         onEnterVote: this.onEnterVote.bind(this),
         onEnterResults: this.onEnterResults.bind(this),
         onEnterEnd: this.onEnterEnd.bind(this),
         onEnterLobby: this.onEnterLobby.bind(this),
-      }
+      },
     });
 
     console.log(`Quizzroom ${this.code} - created.`, options);
   }
 
   onEnterLobby() {
-    if (!this.availableQuestions.length){
-      this.availableQuestions = _.shuffle(QUESTIONS)
+    if (!this.availableQuestions.length) {
+      this.availableQuestions = _.shuffle(QUESTIONS);
     }
     this.questions = this.availableQuestions.splice(0, this.state.maxQuestions);
     this.state.questionsAsked = 0;
@@ -104,7 +104,7 @@ module.exports = class QuizzRoom extends Room {
     this.state.state = 'lobby';
   }
 
-  requestJoin (options, isNew) {
+  requestJoin(options, isNew) {
     if (options.code) {
       console.log('code = ', this.code, '==', options.code);
       if (this.code === null) {
@@ -115,15 +115,14 @@ module.exports = class QuizzRoom extends Room {
       if (this.state.gameStarted && this.state.state !== 'lobby'
           && !this.state.players[options.clientId]
           && !this.state.screens[options.clientId]
-        ) {
+      ) {
         throw new Error('join_request_fail_game_in_progress');
-        return false;
       }
 
-      return options.code.toUpperCase() == this.code.toUpperCase();
+      return options.code.toUpperCase() === this.code.toUpperCase();
     }
 
-    if(!options.code) {
+    if (!options.code) {
       console.log('no code - isNew = ', isNew);
       return isNew;
     }
@@ -132,9 +131,9 @@ module.exports = class QuizzRoom extends Room {
     return false;
   }
 
-  onJoin (client, options) {
+  onJoin(client, options) {
     if (!this.code) {
-      this.code = process.env.ROOM_CODE || randomstring.generate({length: 6, readable: true, capitalization: 'uppercase'});
+      this.code = process.env.ROOM_CODE || randomstring.generate({ length: 6, readable: true, capitalization: 'uppercase' });
       this.state.code = this.code;
     }
     if (options.screen) {
@@ -153,7 +152,7 @@ module.exports = class QuizzRoom extends Room {
       this.state.logs.push(`Player ${client.id} ${username} joined.`);
       if (this.state.players[client.id]) {
         this.state.players[client.id].disconnected = false;
-        //If all players are connected, resume the game
+        // If all players are connected, resume the game
         if (!this.disconnectedPlayers().length) {
           if (this.state.state !== 'lobby') {
             this.lock();
@@ -173,11 +172,10 @@ module.exports = class QuizzRoom extends Room {
       }
 
       this.pauseLobby();
-
     }
   }
 
-  onLeave (client) {
+  onLeave(client) {
     if (this.state.players[client.id]) {
       console.log(`Quizzroom ${this.code} - client ${client.id} left.`);
       this.state.players[client.id].disconnected = true;
@@ -195,7 +193,7 @@ module.exports = class QuizzRoom extends Room {
       return;
     }
 
-    this.state.gameTimer--;
+    this.state.gameTimer -= 1;
 
     if (this.state.gameTimer <= 0) {
       this.timer.start.clear();
@@ -211,13 +209,13 @@ module.exports = class QuizzRoom extends Room {
     return _.last(this.questionsAsked);
   }
 
-  onEnterQuestion () {
+  onEnterQuestion() {
     this.state.gameTimer = null;
     this.state.gameTimerMax = null;
-    this.state.questionsAsked++;
+    this.state.questionsAsked += 1;
     const question = this.getNextQuestion();
     this.questionsAsked.push(question);
-    this.state.question = {...question};
+    this.state.question = { ...question };
 
     const callback = () => {
       this.fsm.vote();
@@ -226,29 +224,29 @@ module.exports = class QuizzRoom extends Room {
     this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
   }
 
-  onEnterVote () {
+  onEnterVote() {
     this.state.gameTimer = VOTE_TIME;
     this.state.gameTimerMax = VOTE_TIME;
 
     const playerAnswers = _.reduce(this.state.players, (o, p) => {
-                                    if(p.answer) {
-                                      o.push(p.answer);
-                                    }
-                                    return o;
-                                  }, []);
+      if (p.answer) {
+        o.push(p.answer);
+      }
+      return o;
+    }, []);
 
 
     let allAnswers = _.uniq([
       ...playerAnswers,
-      this.getLastQuestion().answer.toUpperCase()
+      this.getLastQuestion().answer.toUpperCase(),
     ]);
-    //If not enough answers, we're gonna add traps
+    // If not enough answers, we're gonna add traps
     const missingAnswers = _.keys(this.state.players).length - (allAnswers.length - 1);
     allAnswers = [
       ...allAnswers,
       ..._.sampleSize(
-        this.getLastQuestion().traps || [],
-        missingAnswers
+        this.getLastQuestion().traps || [],
+        missingAnswers,
       )];
     this.state.answersChoice = _.shuffle(allAnswers).map(item => item.toUpperCase());
 
@@ -258,42 +256,41 @@ module.exports = class QuizzRoom extends Room {
     this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
   }
 
-  onEnterResults () {
+  onEnterResults() {
     const SCORE_CORRECT = 1000;
     const SCORE_FOOL = 500;
     const SCORE_TRAP = -200;
 
     this.state.gameTimer = RESULT_TIME;
     this.state.gameTimerMax = RESULT_TIME;
-    this.state.question = {...this.getLastQuestion()};
+    this.state.question = { ...this.getLastQuestion() };
     this.state.results = {};
 
     const correctAnswer = this.state.question.answer.toUpperCase();
     const data = _.reduce(this.state.players, (o, p) => {
-
-      if(p.answer) {
-        if(!o.answers[p.answer]) {
+      if (p.answer) {
+        if (!o.answers[p.answer]) {
           o.answers[p.answer] = [];
         }
         o.answers[p.answer].push(p);
       }
 
-      if(p.vote) {
-        if(!o.votes[p.vote]) {
+      if (p.vote) {
+        if (!o.votes[p.vote]) {
           o.votes[p.vote] = [];
         }
         o.votes[p.vote].push(p);
       }
 
       return o;
-    }, {votes: {}, answers: {}});
+    }, { votes: {}, answers: {} });
 
 
     const playerVotes = data.votes;
     const playerAnswers = data.answers;
 
-    for (let vote in playerVotes) {
-      let players = playerVotes[vote];
+    for (const vote in playerVotes) {
+      const players = playerVotes[vote];
       let type = null;
 
       if (vote === correctAnswer) {
@@ -311,8 +308,8 @@ module.exports = class QuizzRoom extends Room {
         foolers: {},
       };
 
-      for (let p of players) {
-        let player = this.state.players[p.id];
+      for (const p of players) {
+        const player = this.state.players[p.id];
         let points = 0;
 
         if (type === 'correct') {
@@ -320,7 +317,7 @@ module.exports = class QuizzRoom extends Room {
 
           player.score += points;
           this.state.results[vote].players[player.name] = {
-            points: points,
+            points,
             ...player,
           };
         }
@@ -330,23 +327,23 @@ module.exports = class QuizzRoom extends Room {
 
           player.score += points;
           this.state.results[vote].players[player.name] = {
-            points: points,
+            points,
             ...player,
           };
         }
 
         if (type === 'fool') {
-          let playersAnswer = playerAnswers[vote];
+          const playersAnswer = playerAnswers[vote];
           if (playersAnswer) {
             points = SCORE_FOOL;
             this.state.results[vote].players[player.name] = {
               ...player,
             };
 
-            for (let a of playersAnswer) {
-              let fooler = this.state.players[a.id];
+            for (const a of playersAnswer) {
+              const fooler = this.state.players[a.id];
               if (fooler.id === player.id) {
-                //You can't fool yourself
+                // You can't fool yourself
                 continue;
               }
               fooler.score += points;
@@ -364,7 +361,7 @@ module.exports = class QuizzRoom extends Room {
       }
     }
 
-    //Add the correct answer, if no one voted for it
+    // Add the correct answer, if no one voted for it
     if (!this.state.results[correctAnswer]) {
       this.state.results[correctAnswer] = {
         vote: correctAnswer,
@@ -374,10 +371,10 @@ module.exports = class QuizzRoom extends Room {
       };
     }
 
-    //Sort correct answer at the end
-    this.state.results = _.sortBy(this.state.results, (o) => o.type == 'correct')
+    // Sort correct answer at the end
+    this.state.results = _.sortBy(this.state.results, o => o.type === 'correct');
 
-    //Reset players vote and answer
+    // Reset players vote and answer
     this.state.players = _.mapValues(this.state.players, (p) => {
       p.answer = null;
       p.vote = null;
@@ -390,19 +387,15 @@ module.exports = class QuizzRoom extends Room {
     this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
   }
 
-  onEnterEnd () {
+  onEnterEnd() {
     this.state.gameStarted = false;
-  }
-
-  onBeforeTransition (lifecycle) {
-    return true;
   }
 
   /**
    * Update server state to notify clients of the new state.
    * @param lifecycle
    */
-  onEnterState (lifecycle) {
+  onEnterState(lifecycle) {
     if (!this.state) {
       return;
     }
@@ -411,18 +404,18 @@ module.exports = class QuizzRoom extends Room {
     this.unreadyPlayers();
   }
 
-  pauseGame (message = '') {
+  pauseGame(message = '') {
     this.state.gamePaused = true;
     this.state.gamePausedMessage = message;
   }
 
-  resumeGame () {
+  resumeGame() {
     this.state.gamePaused = false;
     this.state.gamePausedMessage = '';
   }
 
-  onMessage (client, data) {
-    this.state.logs.push(`(${ client.id }) ${ JSON.stringify(data) }`);
+  onMessage(client, data) {
+    this.state.logs.push(`(${client.id}) ${JSON.stringify(data)}`);
 
 
     if (data.startNewGame) {
@@ -437,7 +430,7 @@ module.exports = class QuizzRoom extends Room {
           this.lock();
           this.fsm.start();
         };
-        this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000)
+        this.timer.start = this.clock.setInterval(this.updateGameTimer.bind(this, callback), 1000);
         this.state.gameStarted = true;
       }
 
@@ -461,7 +454,7 @@ module.exports = class QuizzRoom extends Room {
     }
 
     if (data.newName) {
-      if(!this.state.gameStarted) {
+      if (!this.state.gameStarted) {
         this.state.players[client.id].name = data.newName;
       }
     }
@@ -473,25 +466,23 @@ module.exports = class QuizzRoom extends Room {
       }
     }
 
-    //FOR DEBUGGING PURPOSES
+    // FOR DEBUGGING PURPOSES
     if (data.next) {
       this.state.gameTimer = 1;
     }
-
   }
 
-  onPlayerAnswer (client, data) {
+  onPlayerAnswer(client, data) {
     const answer = data.answer.toUpperCase();
     const player = this.state.players[client.id];
 
     player.answer = answer;
 
     this.markPlayerIsReady(player.id);
-
   }
 
-  onPlayerVote (client, data) {
-    const vote = data.vote;
+  onPlayerVote(client, data) {
+    const { vote } = data;
     const player = this.state.players[client.id];
 
     player.vote = vote;
@@ -501,51 +492,50 @@ module.exports = class QuizzRoom extends Room {
     } else {
       this.markPlayerIsReady(player.id);
     }
-
   }
 
-  onDispose () {
+  onDispose() {
     console.log(`Quizzroom ${this.code} - deleted.`);
   }
 
-  markPlayerIsReady (playerId, allPlayerReadyTimer = true) {
+  markPlayerIsReady(playerId, allPlayerReadyTimer = true) {
     if (!this.state.players[playerId]) {
       return;
     }
     this.state.players[playerId].ready = true;
-    //If all players are ready, skip to next step.
-    if(allPlayerReadyTimer && this.areAllPlayersReady()) {
+    // If all players are ready, skip to next step.
+    if (allPlayerReadyTimer && this.areAllPlayersReady()) {
       this.state.gameTimer = 1;
     }
   }
 
-  markPlayerNotReady (playerId) {
+  markPlayerNotReady(playerId) {
     if (!this.state.players[playerId]) {
       return;
     }
     this.state.players[playerId].ready = false;
   }
 
-  areAllPlayersReady () {
-    return _.filter(this.state.players, function(p) { return !p.ready; }).length === 0;
+  areAllPlayersReady() {
+    return _.filter(this.state.players, p => !p.ready).length === 0;
   }
 
-  disconnectedPlayers () {
+  disconnectedPlayers() {
     return _.filter(this.state.players, 'disconnected');
   }
 
-  unreadyPlayers () {
-    this.state.players = _.mapValues(this.state.players, (p) => { return {...p, ready: false}; });
+  unreadyPlayers() {
+    this.state.players = _.mapValues(this.state.players, p => ({ ...p, ready: false }));
   }
 
-  pauseLobby () {
+  pauseLobby() {
     if (this.state.state !== 'lobby') {
       return;
     }
 
     this.unreadyPlayers();
 
-    if(this.timer.start) {
+    if (this.timer.start) {
       this.timer.start.clear();
       this.timer.start = null;
     }

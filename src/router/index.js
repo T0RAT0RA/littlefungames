@@ -12,19 +12,19 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: Index
+      component: Index,
     },
     {
       path: '/play/:room?',
       name: 'play',
       component: Screen,
-      props: true
+      props: true,
     },
     {
       path: '/r/:room?',
       name: 'remote',
       component: Remote,
-      props: true
-    }
-  ]
-})
+      props: true,
+    },
+  ],
+});

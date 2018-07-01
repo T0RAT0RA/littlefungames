@@ -1,13 +1,13 @@
-var path = require('path')
-var webpack = require('webpack')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const path = require('path');
+const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js'
+    filename: 'build.js',
   },
   module: {
     rules: [
@@ -15,7 +15,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'vue-style-loader',
-          'css-loader'
+          'css-loader',
         ],
       },
       {
@@ -24,34 +24,34 @@ module.exports = {
         options: {
           loaders: {
             // you need to specify `i18n` loaders key with `vue-i18n-loader` (https://github.com/kazupon/vue-i18n-loader)
-            i18n: '@kazupon/vue-i18n-loader'
-          }
-        }
+            i18n: '@kazupon/vue-i18n-loader',
+          },
+        },
       },
       {
         resourceQuery: /blockType=i18n/,
-        loader: '@kazupon/vue-i18n-loader'
+        loader: '@kazupon/vue-i18n-loader',
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]?[hash]'
-        }
-      }
-    ]
+          name: '[name].[ext]?[hash]',
+        },
+      },
+    ],
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
+      vue$: 'vue/dist/vue.esm.js',
       '@': path.resolve(__dirname, 'src'),
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.js', '.vue', '.json'],
   },
   devServer: {
     historyApiFallback: true,
@@ -62,7 +62,7 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/assets': {
-        target: 'http://localhost:9090'
+        target: 'http://localhost:9090',
       },
       'ws://localhost:8080/': {
         target: 'http://localhost:9090',
@@ -71,30 +71,30 @@ module.exports = {
     },
   },
   performance: {
-    hints: false
+    hints: false,
   },
-  devtool: '#eval-source-map'
-}
+  devtool: '#eval-source-map',
+};
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
+  module.exports.devtool = '#source-map';
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"'
-      }
+        NODE_ENV: '"production"',
+      },
     }),
     new UglifyJsPlugin({
       sourceMap: true,
       uglifyOptions: {
         compress: {
-          warnings: false
+          warnings: false,
         },
       },
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
+      minimize: true,
+    }),
+  ]);
 }

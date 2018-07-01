@@ -1,25 +1,26 @@
-const colyseus = require("colyseus");
+const colyseus = require('colyseus');
 // const Monitor = require('colyseus-monitor').Monitor;
-const http = require("http");
-const express = require("express");
-const path = require("path");
+const http = require('http');
+const express = require('express');
+const path = require('path');
 const QuizzRoom = require('./rooms/QuizzRoom');
+
 const app = express();
 
 const appPort = process.env.PORT || 9090;
 
 const gameServer = new colyseus.Server({
-  server: http.createServer(app)
+  server: http.createServer(app),
 });
 // const monitor = new Monitor({ server: gameServer, express: app });
 
-gameServer.register("quizz", QuizzRoom);
+gameServer.register('quizz', QuizzRoom);
 gameServer.listen(appPort);
 
 
-app.use('/assets', express.static(path.join(__dirname+'/assets')));
-app.use('/dist', express.static(path.join(__dirname+'/dist')));
+app.use('/assets', express.static(path.join(`${__dirname}/assets`)));
+app.use('/dist', express.static(path.join(`${__dirname}/dist`)));
 
-app.get('*',function(req,res) {
-  res.sendFile(path.join(__dirname+'/index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/index.html`));
 });

@@ -13,9 +13,9 @@ const i18n = new VueI18n({
   locale: 'fr',
 });
 
-new Vue({
+new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
   i18n,
-  render: h => h(App)
+  render: h => h(App),
 });

@@ -1,18 +1,20 @@
 <template>
-  <div id="app" class="cover-container d-flex w-100 h-100 mx-auto flex-column">
+  <div
+    id="app"
+    class="cover-container d-flex w-100 h-100 mx-auto flex-column">
     <router-view/>
   </div>
 </template>
 
 <script>
 
-  export default {
-    name: 'app',
-    data() {
-      return {
-      };
-    },
-  }
+export default {
+  name: 'App',
+  data() {
+    return {
+    };
+  },
+};
 </script>
 
 <style>
@@ -24,23 +26,23 @@
     background-color: #fff;
     border: .05rem solid #fff;
   }
-  
+
   /*
    * Base structure
    */
-  
+
   html,
   body {
     height: 100%;
     background-color: #333;
   }
-  
+
   body {
     display: -ms-flexbox;
     display: flex;
     color: #fff;
   }
-  
+
   pre {
     background-color: #FFF;
     border-radius: 5px;
@@ -48,12 +50,12 @@
     text-align: left;
     padding: 15px;
   }
-  
+
   pre, .card, .list-group {
     color: #212529;
     text-shadow: none;
   }
-  
+
   input {
     background-color: #FFF;
     border: 1px solid;

@@ -1,23 +1,23 @@
-import * as Colyseus from "colyseus.js";
+import * as Colyseus from 'colyseus.js';
 
 export default {
   data() {
     return {
-        debug: false,
-        debugState: false,
-        client: null,
-        serverError: null,
-        isConnected: false,
-        gameState: null,
-        serverState: {},
-        serverRoom: null,
-        roomCode: null,
+      debug: false,
+      debugState: false,
+      client: null,
+      serverError: null,
+      isConnected: false,
+      gameState: null,
+      serverState: {},
+      serverRoom: null,
+      roomCode: null,
     };
   },
 
-  created: function () {
+  created() {
     const host = window.document.location.host.replace(/:.*/, '');
-    const ws = location.protocol.replace("http", "ws")+'//' + host + (location.port ? ':' + location.port : '');
+    const ws = `${window.location.protocol.replace('http', 'ws')}//${host}${window.location.port ? `:${window.location.port}` : ''}`;
     this.client = new Colyseus.Client(ws);
 
     this.client.onError.add((err) => {
@@ -38,33 +38,33 @@ export default {
   },
 
   computed: {
-      currentRoomCode: function() {
-        return this.serverState.code;
-      }
+    currentRoomCode() {
+      return this.serverState.code;
+    },
   },
 
   methods: {
-    create: function(roomType, options) {
-      return this.connect(roomType, options)
+    create(roomType, options) {
+      return this.connect(roomType, options);
     },
 
-    join: function(roomType, options) {
+    join(roomType, options) {
       if (!this.roomCode) {
         return Promise.reject(new Error('missing_room_code'));
       }
 
       return this.connect(roomType, {
         ...options,
-        code: this.roomCode
-      })
+        code: this.roomCode,
+      });
     },
 
-    connect: function(roomType = 'quizz', options = {}) {
+    connect(roomType = 'quizz', options = {}) {
       this.serverError = null;
 
       try {
         this.serverRoom = this.client.join(roomType, options);
-      } catch(err) {
+      } catch (err) {
         return Promise.reject(new Error(err));
       }
 
@@ -76,7 +76,7 @@ export default {
         this.isConnected = false;
       });
 
-      this.serverRoom.onError.add((err) => {
+      this.serverRoom.onError.add(() => {
         this.isConnected = false;
       });
 
@@ -84,11 +84,11 @@ export default {
         this.serverState = state;
       });
 
-      this.serverRoom.listen("state", (change) => {
+      this.serverRoom.listen('state', (change) => {
         this.gameState = change.value;
       });
 
       return Promise.resolve(this.serverRoom);
     },
   },
-}
+};
