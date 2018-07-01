@@ -24,6 +24,7 @@ fs.readdirSync('./assets/player').forEach((file) => {
 
 const QUESTIONS = require('./questions.fr.json');
 
+const ROOM_CODE_LENGTH = 4
 // Times in seconds
 const LOBBY_TIME = 5;
 const QUESTION_TIME = 30;
@@ -138,7 +139,7 @@ module.exports = class QuizzRoom extends Room {
 
   onJoin(client, options) {
     if (!this.code) {
-      this.code = process.env.ROOM_CODE || randomstring.generate({ length: 6, readable: true, capitalization: 'uppercase' });
+      this.code = process.env.ROOM_CODE || randomstring.generate({ length: ROOM_CODE_LENGTH, readable: true, capitalization: 'uppercase' });
       this.state.code = this.code;
     }
     if (options.screen) {
