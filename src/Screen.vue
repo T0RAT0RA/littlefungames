@@ -2,31 +2,39 @@
   <div class="screen">
     <div v-if="!isConnected">
 
-      <button
-        type="button"
-        class="btn btn-primary btn-lg"
-        @click="createGame()">
-        {{ $t('New Game') }}
-      </button>
-      <br>{{ $t('or') }}<br>
-      {{ $t('Join a game:') }} <input
-        v-model="roomCode"
-        :placeholder="$t('Code')"
-        size="8"
-        maxlength="6"
-        autofocus >
-      <button
-        type="button"
-        class="btn btn-secondary btn-lg"
-        @click="join('quizz', {screen: true})">
-        {{ $t('Join') }}
-      </button>
-
       <p
         class="text-danger"
         v-if="serverError">
         {{ serverError }}
       </p>
+
+      <div class="row">
+        <div class="col-sm">
+          <div class="card">
+            <div class="card-header">
+              {{ $t('Quizz game') }}
+            </div>
+            <div class="card-body">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="createGame()">
+                {{ $t('New Game') }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm">
+          <div class="card">
+            <div class="card-header">
+              {{ $t('More games') }}
+            </div>
+            <div class="card-body">
+              {{ $t('Coming soon...') }}
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -657,6 +665,9 @@ export default {
 <i18n>
 {
   "fr": {
+    "Quizz game": "Jeu Quizz",
+    "More games": "Plus de jeux",
+    "Coming soon...": "Bientôt...",
     "Room code:": "Code de partie:",
     "New Game": "Nouvelle partie",
     "or": "ou",
