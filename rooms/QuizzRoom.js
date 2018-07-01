@@ -115,8 +115,11 @@ module.exports = class QuizzRoom extends Room {
         throw new Error('join_request_fail_screen_already_setup');
       }
       // If a client tries to join a started game and is not part of the game, disconnect him
-      if (this.state.gameStarted && this.state.state !== 'lobby'
-          && !this.state.players[options.clientId]
+      if (
+        this.state.gameStarted
+        && this.state.state !== 'lobby'
+        && !this.state.players[options.clientId]
+        && !this.state.gamePaused
       ) {
         throw new Error('join_request_fail_game_in_progress');
       }
@@ -458,6 +461,17 @@ module.exports = class QuizzRoom extends Room {
     if (data.newName) {
       if (!this.state.gameStarted) {
         this.state.players[client.id].name = data.newName;
+      }
+    }
+    if (data.removePlayer) {
+      if (this.state.players[data.removePlayer]) {
+        delete this.state.players[data.removePlayer];
+        if (!this.disconnectedPlayers().length) {
+          if (this.state.state !== 'lobby') {
+            this.lock();
+          }
+          this.resumeGame();
+        }
       }
     }
 

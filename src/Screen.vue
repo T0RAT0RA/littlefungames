@@ -67,7 +67,9 @@
                     class="fas fa-check"
                     v-if="player.ready"/>
                   <template v-if="player.disconnected">
-                    <i class="fas fa-exclamation-triangle"/>
+                    <i
+                      class="fas fa-exclamation-triangle"
+                      @click="removePlayer(player)"/>
                   </template>
                   <span
                     class="badge badge-primary"
@@ -530,6 +532,9 @@ export default {
           new Audio(`/assets/player/${change.value.sound}`).play();
         }
       });
+    },
+    removePlayer(player) {
+      this.serverRoom.send({ removePlayer: player.id });
     },
     beforeEnter(el) {
       Array.from(el.children).map((node) => { node.style.display = 'none'; return node; });
