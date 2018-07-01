@@ -39,11 +39,13 @@
                   :class="{
                     'list-group-item-warning': player.disconnected
                   }">
-                <span>
+                <span class="player-name-container">
                   <span class="player-color"
                     :style="{ backgroundColor: player.color }"
-                  ></span>
-                  {{ player.name }}
+                  />
+                  <span class="player-name">
+                    {{ player.name }}
+                  </span>
                 </span>
                 <span>
                   <i class="fas fa-check" v-if="player.ready"></i>
@@ -57,6 +59,13 @@
                 </span>
               </li>
             </ul>
+
+            <div v-if="gameState !== 'lobby'">
+              <div>{{ $t('Room code:') }} <b>{{ serverState.code }}</b></div>
+              <div>
+                <img :src="qrCode"/>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -71,7 +80,6 @@
               <div class="float-left">
                 {{ $t('Questions:') }} {{ `${serverState.questionsAsked}/${serverState.maxQuestions}` }}
               </div>
-              <div class="float-right">{{ $t('Room code:') }} <b>{{ serverState.code }}</b></div>
             </div>
             <div class="card-body">
               <div v-if="gameState === 'lobby'">

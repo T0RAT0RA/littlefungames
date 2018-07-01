@@ -34,7 +34,7 @@
       <div class="row">
         <div class="col game">
           <div v-if="gameState === 'lobby'">
-            <input ref="name" size="12" class="username"
+            <input ref="name" size="20" class="username" maxlength="20"
                    @keyup="updateName"
                    @change="updateName"/>
             <br>
@@ -78,7 +78,7 @@
                 </button>
               </div>
             </div>
-          
+
           </div>
           <div v-else-if="gameState === 'end'">
             <button @click="restart"
