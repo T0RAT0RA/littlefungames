@@ -51,6 +51,7 @@
       <div class="row">
         <div class="col game">
           <div v-if="gameState === 'lobby'">
+            {{ $t('Change your name:') }}
             <input
               ref="name"
               size="20"
@@ -62,7 +63,7 @@
             <button
               @click="start"
               v-if="!player.ready"
-              class="btn btn-secondary btn-lg">{{ $t('Start the game') }}
+              class="btn btn-secondary btn-lg">{{ $t('Everyone is in') }}
             </button>
             <button
               @click="pause"
@@ -312,7 +313,8 @@ export default {
     "Join": "Rejoindre",
     "Code": "Code",
     "Name": "Nom",
-    "Start the game": "Démarrer la partie",
+    "Change your name:": "Changez votre nom:",
+    "Everyone is in": "Tout le monde est là",
     "Wait!": "Attendez!",
     "Game is paused.": "La partie est en pause.",
     "Your answer": "Votre réponse:",
