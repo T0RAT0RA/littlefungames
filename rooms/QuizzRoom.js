@@ -48,7 +48,7 @@ module.exports = class QuizzRoom extends Room {
       gameStarted: null,
       gamePaused: false,
       gamePausedMessage: '',
-      screens: {},
+      screen: null,
       players: {},
       answers: null,
       results: {},
@@ -111,10 +111,12 @@ module.exports = class QuizzRoom extends Room {
         throw new Error('join_request_fail_room_unknown');
       }
 
+      if (options.screen && this.state.screen) {
+        throw new Error('join_request_fail_screen_already_setup');
+      }
       // If a client tries to join a started game and is not part of the game, disconnect him
       if (this.state.gameStarted && this.state.state !== 'lobby'
           && !this.state.players[options.clientId]
-          && !this.state.screens[options.clientId]
       ) {
         throw new Error('join_request_fail_game_in_progress');
       }
@@ -139,7 +141,7 @@ module.exports = class QuizzRoom extends Room {
     if (options.screen) {
       console.log(`Quizzroom ${this.code} - screen ${client.id} joined.`);
       this.state.logs.push(`Screen ${client.id} joined.`);
-      this.state.screens[client.id] = {
+      this.state.screen = {
         id: client.id,
       };
     } else {
@@ -181,9 +183,9 @@ module.exports = class QuizzRoom extends Room {
       this.state.players[client.id].disconnected = true;
       this.pauseGame('A player has been lost! The game will resume once they\'re back.');
       this.unlock();
-    } else if (this.state.screens[client.id]) {
+    } else if (this.state.screen && this.state.screen.id === client.id) {
       console.log(`Quizzroom ${this.code} - screen ${client.id} left.`);
-      delete this.state.screens[client.id];
+      this.state.screen = null;
       this.state.logs.push(`Screen ${client.id} left.`);
     }
   }
