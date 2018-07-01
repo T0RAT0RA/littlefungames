@@ -195,7 +195,6 @@ module.exports = class QuizzRoom extends Room {
       this.unlock();
     } else if (this.state.screen && this.state.screen.id === client.id) {
       console.log(`Quizzroom ${this.code} - screen ${client.id} left.`);
-      this.state.screen = null;
       this.state.logs.push(`Screen ${client.id} left.`);
       this.pauseGame('The screen has been lost! The game will resume once it\'s back.');
       this.unlock();

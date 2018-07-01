@@ -523,6 +523,9 @@ export default {
     onGameJoin(serverRoom) {
       serverRoom.listen('players/:id/:attribute', (change) => {
         if (change.path.attribute === 'ready' && change.value) {
+          if (this.serverState && !this.serverState.players) {
+            return;
+          }
           const player = this.serverState.players[change.path.id];
           new Audio(`/assets/player/${player.sound}`).play();
         }
