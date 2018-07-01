@@ -112,7 +112,7 @@ module.exports = class QuizzRoom extends Room {
         throw new Error('join_request_fail_room_unknown');
       }
 
-      if (options.screen && this.state.screen) {
+      if (options.screen && this.state.screen && this.state.screen.id !== options.clientId) {
         throw new Error('join_request_fail_screen_already_setup');
       }
       // If a client tries to join a started game and is not part of the game, disconnect him
@@ -145,9 +145,15 @@ module.exports = class QuizzRoom extends Room {
     if (options.screen) {
       console.log(`Quizzroom ${this.code} - screen ${client.id} joined.`);
       this.state.logs.push(`Screen ${client.id} joined.`);
-      this.state.screen = {
-        id: client.id,
-      };
+      // If the screen is already know
+      if (this.state.screen && this.state.screen.id === client.id) {
+        this.lock();
+        this.resumeGame();
+      } else {
+        this.state.screen = {
+          id: client.id,
+        };
+      }
     } else {
       let username = options.name;
       if (!options.name) {
@@ -191,6 +197,8 @@ module.exports = class QuizzRoom extends Room {
       console.log(`Quizzroom ${this.code} - screen ${client.id} left.`);
       this.state.screen = null;
       this.state.logs.push(`Screen ${client.id} left.`);
+      this.pauseGame('The screen has been lost! The game will resume once it\'s back.');
+      this.unlock();
     }
   }
 
