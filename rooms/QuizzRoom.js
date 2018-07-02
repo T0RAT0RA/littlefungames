@@ -27,7 +27,7 @@ const QUESTIONS = require('./questions.fr.json');
 const ROOM_CODE_LENGTH = 4
 // Times in seconds
 const LOBBY_TIME = 5;
-const QUESTION_TIME = 30;
+const QUESTION_TIME = 45;
 const VOTE_TIME = 30;
 const RESULT_TIME = null; // null means infinite
 const MAX_QUESTIONS = process.env.QUESTIONS || 5;
@@ -471,6 +471,7 @@ module.exports = class QuizzRoom extends Room {
         this.state.players[client.id].name = data.newName;
       }
     }
+
     if (data.removePlayer) {
       if (this.state.players[data.removePlayer]) {
         delete this.state.players[data.removePlayer];
