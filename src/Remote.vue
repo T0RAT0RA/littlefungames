@@ -265,7 +265,7 @@ export default {
       this.serverRoom.send({ pauseGame: true });
     },
     answer() {
-      const answer = this.$refs.answerInput;
+      const answer = this.$refs.answerInput.trim();
 
       this.answerWarning = null;
 
